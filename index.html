@@ -1,128 +1,1680 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<title>現場面積計測</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>実用多方式 面積計算ツール＋土壁面積</title>
 <style>
-:root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#667085;--line:#d7deea;--pri:#1267d8;--ok:#147a3f;--bad:#b42318;--warn:#a15c00;--shadow:0 2px 10px rgba(16,24,40,.08);--r:14px}
-*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:16px}body{padding-bottom:calc(20px + env(safe-area-inset-bottom))}
-header{position:sticky;top:0;z-index:20;background:rgba(245,247,251,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:10px 12px}h1{font-size:19px;margin:0 0 6px}.small{font-size:13px;color:var(--muted);line-height:1.35}.wrap{max-width:980px;margin:0 auto;padding:12px}.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:12px;margin:0 0 12px}h2{font-size:17px;margin:0 0 10px}h3{font-size:15px;margin:10px 0 8px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px}.btn{appearance:none;border:1px solid #b8c4d8;background:#fff;color:var(--ink);border-radius:12px;padding:11px 12px;min-height:44px;font-size:16px;font-weight:650}.btn:active{transform:translateY(1px)}.pri{background:var(--pri);border-color:var(--pri);color:#fff}.ok{background:var(--ok);border-color:var(--ok);color:#fff}.bad{background:#fff1f0;border-color:#f3aaa4;color:var(--bad)}.warn{background:#fff7e6;border-color:#ffd18a;color:var(--warn)}.ghost{background:#f8fafc}.btn[disabled]{opacity:.45}input,select{width:100%;min-height:44px;border:1px solid #b8c4d8;border-radius:12px;padding:9px 10px;font-size:16px;background:#fff}.field{display:grid;gap:5px}.field label{font-size:13px;color:var(--muted)}.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pill{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 9px;font-size:13px}.activePill{border-color:var(--pri);color:var(--pri);font-weight:700}.tabs{display:flex;gap:8px;overflow:auto;padding-bottom:4px}.targetItem,.photoItem{display:flex;gap:8px;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:12px;padding:8px;background:#fff;margin-top:6px}.targetItem button,.photoItem button{min-height:36px;padding:7px 9px;font-size:14px}.stageBox{position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#111;min-height:260px;touch-action:pan-y}.drawMode{touch-action:none}.stage{display:block;width:100%;height:auto;max-height:68vh;object-fit:contain;background:#111}.overlay{position:absolute;left:0;top:0;width:100%;height:100%;touch-action:none}.guide{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.15) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.15) 1px,transparent 1px);background-size:25% 25%;}.guide:before,.guide:after{content:"";position:absolute;background:rgba(0,255,255,.55)}.guide:before{left:50%;top:0;width:1px;height:100%}.guide:after{top:50%;left:0;height:1px;width:100%}.angleGuide{position:absolute;right:12px;bottom:12px;width:82px;height:82px;border-left:3px solid rgba(0,255,255,.9);border-bottom:3px solid rgba(0,255,255,.9);pointer-events:none}.hidden{display:none!important}.notice{background:#eef4ff;border:1px solid #c7d7fe;border-radius:12px;padding:9px;color:#234;font-size:14px;line-height:1.4}.danger{background:#fff1f0;border-color:#f3aaa4}.tableWrap{overflow:auto;border:1px solid var(--line);border-radius:12px}table{width:100%;border-collapse:collapse;background:#fff;font-size:14px}th,td{border-bottom:1px solid var(--line);padding:8px;text-align:left;white-space:nowrap}th{background:#f8fafc;color:#475467}tfoot td{font-weight:800;background:#f3f6fb}.kbd{font-family:ui-monospace,monospace;background:#eef2f7;border:1px solid #ccd5e1;border-radius:6px;padding:1px 5px}.previewActions{position:absolute;left:8px;right:8px;bottom:8px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;z-index:5}.modal{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px}.modalCard{background:#fff;border-radius:16px;max-width:460px;width:100%;padding:14px;box-shadow:var(--shadow)}.videoBox{position:relative;background:#000;border-radius:14px;overflow:hidden}.videoBox video{width:100%;display:block}.cameraActions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}.camGuide{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.18) 1px,transparent 1px);background-size:25% 25%}.camGuide:before,.camGuide:after{content:"";position:absolute;background:rgba(0,255,255,.65)}.camGuide:before{left:50%;top:0;width:2px;height:100%}.camGuide:after{left:0;top:50%;height:2px;width:100%}.camRight{position:absolute;right:18px;bottom:18px;width:78px;height:78px;border-left:4px solid rgba(0,255,255,.95);border-bottom:4px solid rgba(0,255,255,.95)}.nameBtns{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.nameBtns .btn{font-size:15px;padding:8px;min-height:40px}.muted{color:var(--muted)}@media(max-width:520px){.two{grid-template-columns:1fr}.previewActions{grid-template-columns:1fr}.nameBtns{grid-template-columns:repeat(3,1fr)}.btn{font-size:15px}}
+  :root {
+    --bg: #f7f8fb;
+    --card: #ffffff;
+    --line: #d7dbe7;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --ok-bg: #ecfdf5;
+    --ok-border: #10b981;
+    --need-bg: #fff7ed;
+    --need-border: #f59e0b;
+    --bad-bg: #fef2f2;
+    --bad-border: #ef4444;
+    --accent: #2563eb;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Hiragino Sans", "Yu Gothic", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.45;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 1.8rem; margin: 0 0 8px; }
+  .lead { color: var(--muted); margin-bottom: 16px; }
+  .grid {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  }
+  .controls label, .field label, .small { font-size: .93rem; color: var(--muted); }
+  select, input, button, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    font-size: 1rem;
+    background: white;
+  }
+  button {
+    background: var(--accent);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+  }
+  button.secondary { background: #64748b; }
+  button + button { margin-top: 8px; }
+  .row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  @media (max-width: 640px) {
+    .row, .row3 { grid-template-columns: 1fr; }
+  }
+  .field {
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    padding: 10px;
+    background: #fff;
+  }
+  .field.done { background: var(--ok-bg); border-color: var(--ok-border); }
+  .field.need { background: var(--need-bg); border-color: var(--need-border); }
+  .field.invalid { background: var(--bad-bg); border-color: var(--bad-border); }
+  .field .hint { font-size: .85rem; color: var(--muted); margin-top: 4px; }
+  .pill {
+    display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: .84rem;
+    background: #eff6ff; color: #1d4ed8; font-weight: 700; margin-bottom: 8px;
+  }
+  .result {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 12px;
+  }
+  .resultBox {
+    border-radius: 14px; padding: 14px; background: #eff6ff; border: 1px solid #bfdbfe;
+  }
+  .value { font-size: 1.5rem; font-weight: 800; }
+  .warn { color: #b45309; background: #fffbeb; border: 1px solid #fde68a; padding: 10px 12px; border-radius: 12px; }
+  .error { color: #991b1b; background: #fef2f2; border: 1px solid #fecaca; padding: 10px 12px; border-radius: 12px; }
+  .success { color: #065f46; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 10px 12px; border-radius: 12px; }
+  svg { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; background: white; }
+  .formula {
+    background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 12px; white-space: pre-wrap;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92rem;
+  }
+  details { margin-top: 12px; }
+  summary { cursor: pointer; font-weight: 700; }
+  .sectionTitle { font-size: 1.15rem; margin: 0 0 10px; }
+  .list { padding-left: 1.2em; margin: 8px 0; }
+
+  .wallGrid { display:grid; grid-template-columns: 1fr; gap: 16px; }
+  .wallCard { border:1px solid var(--line); border-radius:18px; padding:14px; background:#fff; }
+  .wallHead { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; flex-wrap:wrap; }
+  .wallTitle { font-weight:800; font-size:1.1rem; }
+  .wallPhotos { display:grid; grid-template-columns:1fr; gap:14px; margin-top:12px; }
+  .wallActions { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  .wallActions button { width:auto; padding:9px 12px; }
+  .photoGrid { display:grid; grid-template-columns: 1fr; gap: 14px; }
+  .photoCard { border:1px solid var(--line); border-radius:16px; padding:14px; background:#fff; }
+  .photoHead { display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; }
+  .photoTitle { font-weight:800; font-size:1.05rem; }
+  .toolbarRow { display:flex; flex-wrap:wrap; gap:8px; margin:10px 0; }
+  .toolbarRow button { width:auto; padding:9px 12px; }
+  .toolbarRow button.ghost { background:#e5e7eb; color:#111827; }
+  .toolbarRow button.activeTool { background:#1d4ed8; }
+  .canvasWrap { border:1px solid var(--line); border-radius:14px; overflow:hidden; background:#f8fafc; }
+  .photoCanvas { display:block; width:100%; height:auto; touch-action:manipulation; background:#f8fafc; }
+  .ruleBox { background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:10px 12px; }
+  .tag { display:inline-block; padding:4px 8px; border-radius:999px; background:#eef2ff; color:#3730a3; font-size:.8rem; font-weight:700; }
+  .meter { display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-top:10px; }
+  .meter .resultBox { background:#f8fafc; border-color:#e5e7eb; }
+  .mini { font-size:.82rem; color:var(--muted); }
+  .danger { background:#b91c1c; }
+  .totalsBar { display:grid; grid-template-columns: repeat(3,1fr); gap:10px; }
+  @media (max-width: 720px){ .meter, .totalsBar { grid-template-columns: 1fr; } }
+
+
+  .roomGrid { display:grid; grid-template-columns:1fr; gap:16px; }
+  .roomCard { border:1px solid var(--line); border-radius:18px; padding:14px; background:#fff; }
+  .roomHead { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; flex-wrap:wrap; }
+  .roomTitle { font-weight:800; font-size:1.1rem; }
+  .roomActions { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  .roomActions button { width:auto; padding:9px 12px; }
+
 </style>
 </head>
 <body>
-<header><h1>現場面積計測</h1><div class="small">1ドラッグ＝1辺。基準線を1本引いて実寸mmを入力し、範囲を角から角へ閉じます。</div></header>
 <div class="wrap">
-<section class="card">
-  <h2>1. 対象</h2>
-  <div class="two">
-    <div class="field"><label>対象名</label><input id="targetName" placeholder="例：東面 土壁"></div>
-    <div class="field"><label>用途</label><select id="purpose"></select></div>
+  <h1>実用多方式 面積計算ツール＋土壁面積</h1>
+  <div class="lead">三角形・四角形・五角形・六角形の面積を、複数の入力パターンで計算できます。下には、スマホ現場向けの「土壁を塗る面積」計測機能も入っています。入力を始めると、今の方式でまだ必要な欄がオレンジ色になります。</div>
+
+  <div class="grid">
+    <div class="card controls">
+      <div class="pill">1. 形を選ぶ</div>
+      <label for="shape">図形</label>
+      <select id="shape"></select>
+
+      <div style="height:12px"></div>
+      <div class="pill">2. 計算方式を選ぶ</div>
+      <label for="method">計算方式</label>
+      <select id="method"></select>
+
+      <div style="height:12px"></div>
+      <div class="pill">3. 操作</div>
+      <button id="clearBtn" type="button">この方式の入力をクリア</button>
+      <button id="sampleBtn" type="button" class="secondary">サンプル値を入れる</button>
+
+      <details open>
+        <summary>使い方の要点</summary>
+        <ul class="list">
+          <li>長さの単位は <b>m</b>、角度は <b>度</b> です。</li>
+          <li>四角形以上は、<b>座標入力</b>が最も万能です。</li>
+          <li>不規則な五角形・六角形は、<b>頂点座標</b>か<b>1点から三角形分割</b>が実用的です。</li>
+          <li>坪は 1坪 = 3.305785㎡ で換算しています。</li>
+        </ul>
+      </details>
+    </div>
+
+    <div class="card">
+      <div id="diagramWrap"></div>
+      <div style="height:14px"></div>
+      <div id="fields"></div>
+      <div id="message" style="margin-top:12px"></div>
+      <div class="result">
+        <div class="resultBox">
+          <div class="small">面積（㎡）</div>
+          <div class="value" id="sqm">—</div>
+        </div>
+        <div class="resultBox">
+          <div class="small">面積（坪）</div>
+          <div class="value" id="tsubo">—</div>
+        </div>
+      </div>
+      <details open>
+        <summary>計算式</summary>
+        <div id="formula" class="formula">—</div>
+      </details>
+    </div>
   </div>
-  <h3>名称ボタン</h3><div id="nameBtns" class="nameBtns"></div>
-  <div class="row" style="margin-top:8px"><button class="btn pri" id="addTarget">対象追加</button><button class="btn" id="renameTarget">現在対象へ反映</button><button class="btn warn" id="undoName">戻る</button><button class="btn bad" id="clearName">消去</button></div>
-  <div id="targetList"></div>
-</section>
-<section class="card">
-  <h2>2. 写真</h2>
-  <div class="notice">「写真追加」を押した時だけ写真枠が増えます。撮り直しは現在写真を置き換えます。</div>
-  <div class="row" style="margin-top:8px"><button class="btn pri" id="newPhoto">写真追加</button><button class="btn ok" id="takePhoto">写真を撮る</button><button class="btn" id="pickPhoto">保存写真から選ぶ</button><button class="btn warn" id="retakePhoto">撮り直し</button><button class="btn bad" id="deletePhoto">写真削除</button></div>
-  <input id="cameraInput" class="hidden" type="file" accept="image/*" capture="environment"><input id="fileInput" class="hidden" type="file" accept="image/*">
-  <div id="photoList"></div>
-</section>
-<section class="card">
-  <h2>3. 基準線・範囲なぞり</h2>
-  <div class="row"><span id="statePill" class="pill activePill">範囲モード</span><button class="btn" id="modeRange">範囲</button><button class="btn" id="modeScale">基準線</button><button class="btn" id="undoLine">Undo</button><button class="btn" id="finishNow">始点へ閉じる</button><button class="btn" id="toggleGuide">ガイドON/OFF</button></div>
-  <div class="two" style="margin-top:8px"><div class="field"><label>範囲名（空欄OK）</label><input id="rangeName" placeholder="例：開口部上、範囲1"></div><div class="field"><label>基準線の実寸mm</label><input id="scaleMm" type="number" inputmode="decimal" placeholder="例：1820"></div></div>
-  <div class="notice" style="margin:8px 0">範囲：各辺を1回ずつドラッグ。最後は始点近くへドラッグすると自動で閉じます。基準線：1本ドラッグ後、mmを入力。</div>
-  <div id="stageBox" class="stageBox"><img id="stageImg" class="stage" alt="写真未選択"><canvas id="canvas" class="overlay"></canvas><div id="drawGuide" class="guide"></div><div class="angleGuide"></div></div>
-</section>
-<section class="card">
- <h2>4. 集計</h2>
- <div class="row"><button class="btn" id="savePhotoA4">現在写真A4保存</button><button class="btn" id="saveTargetA4">対象まとめA4保存</button><button class="btn" id="exportJson">控えJSON保存（画像なし）</button><button class="btn" id="importJsonBtn">JSON読込</button></div><input id="importJson" class="hidden" type="file" accept="application/json,.json">
- <h3>写真別・範囲別</h3><div class="tableWrap"><table id="rangeTable"></table></div>
- <h3>対象別</h3><div class="tableWrap"><table id="targetTable"></table></div>
- <h3>全体合計</h3><div id="grandTotal" class="notice"></div>
-</section>
+
+  <div class="card" style="margin-top:16px">
+    <h2 class="sectionTitle">写真から土壁の面積を出したい場合</h2>
+    <div class="warn">
+      <b>結論：</b>できます。ただし、<b>写真だけ</b>では実寸の㎡は確定できないことが多いです。<b>基準となる長さ</b>が写真内に必要です。
+    </div>
+    <ul class="list">
+      <li><b>できる条件</b>：メジャー、定規、既知サイズのブロック、窓枠寸法、レーザー距離計の値など、実寸の基準が1つ以上ある。</li>
+      <li><b>かなり正確にできる条件</b>：壁を正面に近い角度で撮影、四隅が見える、基準長さが同じ平面上にある。</li>
+      <li><b>難しい条件</b>：斜め撮影、魚眼気味、壁の一部が隠れる、基準物がない、遠近で大きく歪む。</li>
+      <li><b>おすすめ手順</b>：①写真から土壁部分をAIで抽出 → ②写真上で基準長さを指定 → ③四隅または多角形点を打つ → ④㎡/坪を算出。</li>
+    </ul>
+    <div class="success">
+      次の段階としては、<b>「写真を読み込んで土壁だけをなぞる → 基準長さ1本を入れる → 面積を出す」</b>専用ツールは作れます。
+      ただし、<b>写真フォルダを勝手に巡回して自動取得</b>はこのチャットだけではできません。写真をまとめてアップロードしてもらえれば、その範囲で選別や設計はできます。
+    </div>
+  
+
+  
+  <div class="card" style="margin-top:16px">
+    <h2 class="sectionTitle">写真から土壁の面積を出す（スマホ現場向け）</h2>
+    <div class="success" style="margin-bottom:12px">
+      <b>目的：</b>この機能は <b>「実際に土壁を塗る面積」</b> を出すためのものです。<br>
+      <b>部屋ごと</b>に管理し、その中に <b>壁</b> を追加します。各壁には <b>写真1〜4枚</b> 登録できます。各写真では <b>①基準線を2点</b> → <b>②実寸を入力</b> → <b>③塗る土壁だけを囲う</b> だけです。
+    </div>
+    <div class="warn" style="margin-bottom:12px">
+      <b>大事なルール：</b>重なって写る土壁は <b>どちらか片方の写真だけ</b> で囲ってください。<b>塗る場所だけ</b> を囲います。
+    </div>
+    <div class="ruleBox" style="margin-bottom:12px">
+      <div><span class="tag">保存について</span></div>
+      <ul class="list" style="margin-bottom:0">
+        <li>このアプリは <b>A4縦のJPEGを必要ページ分</b> 作れます。</li>
+        <li><b>端末の写真フォルダへ完全自動保存</b> はブラウザや端末仕様で制限されることがあります。</li>
+        <li>そのため、<b>JPEGを作成 → ダウンロード / 共有</b> の形にしています。スマホ側で写真保存しやすいようにしてあります。</li>
+      </ul>
+    </div>
+
+    <div class="totalsBar" style="margin-bottom:12px">
+      <div class="resultBox"><div class="small">部屋の登録数</div><div class="value" id="roomCount">0</div></div>
+      <div class="resultBox"><div class="small">1軒合計（㎡）</div><div class="value" id="houseTotalSqm">—</div></div>
+      <div class="resultBox"><div class="small">1軒合計（坪）</div><div class="value" id="houseTotalTsubo">—</div></div>
+    </div>
+
+    <div class="toolbarRow">
+      <button id="addRoomBtn" type="button">部屋を追加</button>
+      <button id="saveJsonBtn" type="button" class="secondary">控えJSON保存（画像なし）</button>
+      <button id="loadJsonBtn" type="button" class="secondary">控えJSON読込</button>
+      <button id="clearRoomsBtn" type="button" class="secondary">全部屋を削除</button>
+      <input id="loadJsonInput" type="file" accept="application/json,.json" style="display:none" />
+    </div>
+    <div id="jsonStatus" class="mini" style="margin:6px 0 10px">JSON控えは写真画像を含まず、部屋名・壁名・基準線・囲い点・面積を保存します。</div>
+
+    <div id="roomCards" class="roomGrid"></div>
+  </div>
+
 </div>
 
-<div id="cameraModal" class="modal hidden"><div class="modalCard"><h2>撮影ガイド</h2><div class="videoBox"><video id="cameraVideo" playsinline autoplay muted></video><div class="camGuide"></div><div class="camRight"></div></div><div class="cameraActions"><button class="btn ok" id="captureShot">撮影</button><button class="btn warn" id="nativeCamera">通常カメラ</button><button class="btn bad" id="closeCamera">閉じる</button></div><p class="small">水平線・垂直線・直角のガイドに合わせて撮影します。映らない場合は通常カメラを使ってください。</p></div></div>
-<div id="confirmModal" class="modal hidden"><div class="modalCard"><h2>写真確認</h2><div class="stageBox"><img id="previewImg" class="stage"><div class="guide"></div><div class="angleGuide"></div></div><div class="previewActions"><button class="btn ok" id="usePreview">この写真を使う</button><button class="btn warn" id="retryPreview">撮り直す</button><button class="btn bad" id="dropPreview">削除</button></div><p class="small">撮影時の水平・垂直・直角ガイドを確認してください。</p></div></div>
 <script>
-(()=>{'use strict';
-const $=id=>document.getElementById(id);const q=(s,p=document)=>p.querySelector(s);const purposes=['土壁','クロス','外壁','サイディング','床','フロア','天井','屋根','瓦','開口部','階段','廊下','トイレ','庭','外構','その他'];const nameWords=['東','西','南','北','左','右','上','下','山','川','道路','側','内','外'];
-const state={targets:[],ti:0,pi:-1,mode:'range',guide:true,drawing:false,dragStart:null,tempEnd:null,currentPts:[],pendingPhoto:null,pendingSrc:null,replaceIndex:null,nameHist:[],camStream:null};
-function uid(p){return p+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
-function target(){return state.targets[state.ti]||null}function photo(){const t=target();return t&&state.pi>=0?t.photos[state.pi]:null}
-function newTarget(name){return{id:uid('t'),name:name||'対象'+(state.targets.length+1),purpose:$('purpose').value||'その他',photos:[]}}
-function newPhotoObj(dataUrl){return{id:uid('p'),name:'写真'+((target()?.photos.length||0)+1),src:dataUrl||'',w:0,h:0,scale:null,ranges:[]}}
-function init(){purposes.forEach(x=>{let o=document.createElement('option');o.textContent=x;o.value=x;$('purpose').appendChild(o)});nameWords.forEach(w=>{let b=document.createElement('button');b.className='btn';b.textContent=w;b.onclick=()=>pushName(w);$('nameBtns').appendChild(b)});bind();state.targets.push(newTarget('対象1'));renderAll()}
-function bind(){['addTarget','renameTarget','undoName','clearName','newPhoto','takePhoto','pickPhoto','retakePhoto','deletePhoto','modeRange','modeScale','undoLine','finishNow','toggleGuide','savePhotoA4','saveTargetA4','exportJson','importJsonBtn','captureShot','nativeCamera','closeCamera'].forEach(id=>$(id).onclick=handlers[id]);$('cameraInput').onchange=e=>fileChosen(e,true);$('fileInput').onchange=e=>fileChosen(e,false);$('scaleMm').onchange=()=>{const p=photo();if(p&&p.scale){p.scale.mm=Number($('scaleMm').value)||0;calcAll();draw();renderTables()}};$('importJson').onchange=importJson;const c=$('canvas');c.addEventListener('pointerdown',down,{passive:false});c.addEventListener('pointermove',move,{passive:false});c.addEventListener('pointerup',up,{passive:false});window.addEventListener('resize',fitCanvas);window.addEventListener('pagehide',()=>closeCamera(false))}
-function pushName(w){const i=$('targetName');state.nameHist.push(i.value);i.value+=w}const handlers={addTarget(){state.targets.push(newTarget($('targetName').value.trim()||''));state.ti=state.targets.length-1;state.pi=-1;renderAll()},renameTarget(){const t=target();if(!t)return;t.name=$('targetName').value.trim()||t.name;t.purpose=$('purpose').value;renderAll()},undoName(){const v=state.nameHist.pop();if(v!==undefined)$('targetName').value=v},clearName(){state.nameHist.push($('targetName').value);$('targetName').value=''},newPhoto(){const t=target();if(!t)return;t.photos.push(newPhotoObj(''));state.pi=t.photos.length-1;state.currentPts=[];renderAll()},takePhoto(){ensurePhotoSlot();state.replaceIndex=state.pi;openCamera()},pickPhoto(){ensurePhotoSlot();state.replaceIndex=state.pi;$('fileInput').value='';$('fileInput').click()},retakePhoto(){if(!photo())return alert('撮り直す写真を選んでください');state.replaceIndex=state.pi;openCamera()},deletePhoto(){const t=target();if(!t||state.pi<0)return;t.photos.splice(state.pi,1);state.pi=Math.min(state.pi,t.photos.length-1);state.currentPts=[];renderAll()},modeRange(){state.mode='range';state.currentPts=[];renderAll()},modeScale(){state.mode='scale';state.currentPts=[];renderAll()},undoLine(){if(state.mode==='range'&&state.currentPts.length)state.currentPts.pop();else{const p=photo();if(p&&p.ranges.length)p.ranges.pop()}calcAll();draw();renderTables()},finishNow(){closeRange(true)},toggleGuide(){state.guide=!state.guide;renderAll()},savePhotoA4(){saveA4('photo')},saveTargetA4(){saveA4('target')},exportJson(){exportJson()},importJsonBtn(){$('importJson').value='';$('importJson').click()},captureShot(){captureFromCamera()},nativeCamera(){closeCamera();$('cameraInput').value='';$('cameraInput').click()},closeCamera(){closeCamera()}};
+const SQM_PER_TSUBO = 3.305785;
 
-async function openCamera(){
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){$('cameraInput').value='';$('cameraInput').click();return}
-  try{
-    closeCamera(false);
-    state.camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:960}},audio:false});
-    $('cameraVideo').srcObject=state.camStream;
-    $('cameraModal').classList.remove('hidden');
-  }catch(err){
-    alert('撮影ガイドを開けません。通常カメラに切り替えます。');
-    $('cameraInput').value='';$('cameraInput').click();
+const shapes = {
+  triangle: {
+    label: '三角形',
+    methods: {
+      sss: { label: '3辺の長さ（ヘロン）', type: 'triangle-sss' },
+      sas: { label: '2辺の長さ＋その間の角度', type: 'triangle-sas' },
+      asa: { label: '1辺＋両端の角度（ASA/AAS）', type: 'triangle-asa' },
+      baseHeight: { label: '底辺＋高さ', type: 'triangle-baseheight' },
+      coords: { label: '3点の座標', type: 'coords', points: 3 }
+    }
+  },
+  quadrilateral: {
+    label: '四角形',
+    methods: {
+      rectangle: { label: '長方形・正方形（縦×横）', type: 'rectangle' },
+      trapezoid: { label: '台形（上底・下底・高さ）', type: 'trapezoid' },
+      parallelogram: { label: '平行四辺形（底辺・高さ）', type: 'parallelogram' },
+      kite: { label: 'ひし形・凧形（対角線2本）', type: 'kite' },
+      diagonal2tri: { label: '対角線で2三角形に分ける', type: 'quad-diagonal' },
+      coords: { label: '4点の座標', type: 'coords', points: 4 }
+    }
+  },
+  pentagon: {
+    label: '五角形',
+    methods: {
+      regularSide: { label: '正五角形（1辺の長さ）', type: 'regular', n: 5 },
+      regularApothem: { label: '正五角形（周長と内接円半径）', type: 'regular-apothem', n: 5 },
+      fan: { label: '1点から三角形3つに分ける', type: 'fan', n: 5 },
+      coords: { label: '5点の座標', type: 'coords', points: 5 }
+    }
+  },
+  hexagon: {
+    label: '六角形',
+    methods: {
+      regularSide: { label: '正六角形（1辺の長さ）', type: 'regular', n: 6 },
+      regularApothem: { label: '正六角形（周長と内接円半径）', type: 'regular-apothem', n: 6 },
+      fan: { label: '1点から三角形4つに分ける', type: 'fan', n: 6 },
+      coords: { label: '6点の座標', type: 'coords', points: 6 }
+    }
+  }
+};
+
+const shapeSelect = document.getElementById('shape');
+const methodSelect = document.getElementById('method');
+const fieldsEl = document.getElementById('fields');
+const messageEl = document.getElementById('message');
+const diagramWrap = document.getElementById('diagramWrap');
+const sqmEl = document.getElementById('sqm');
+const tsuboEl = document.getElementById('tsubo');
+const formulaEl = document.getElementById('formula');
+const clearBtn = document.getElementById('clearBtn');
+const sampleBtn = document.getElementById('sampleBtn');
+
+const state = { values: {} };
+
+function deg2rad(d){ return d * Math.PI / 180; }
+function num(v){
+  if (v === '' || v === null || v === undefined) return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+function fmt(n, digits = 4){
+  if (!Number.isFinite(n)) return '—';
+  return Number(n).toLocaleString('ja-JP', { maximumFractionDigits: digits });
+}
+function setMessage(cls, html) {
+  messageEl.className = cls || '';
+  messageEl.innerHTML = html || '';
+}
+function polygonAreaFromCoords(points){
+  let area = 0;
+  for(let i=0;i<points.length;i++){
+    const [x1,y1] = points[i];
+    const [x2,y2] = points[(i+1)%points.length];
+    area += x1*y2 - y1*x2;
+  }
+  return Math.abs(area)/2;
+}
+function heron(a,b,c){
+  const s=(a+b+c)/2;
+  const v=s*(s-a)*(s-b)*(s-c);
+  if(v < 0) return NaN;
+  return Math.sqrt(v);
+}
+function populateShapeOptions(){
+  shapeSelect.innerHTML = Object.entries(shapes).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
+}
+function populateMethodOptions(){
+  const shape = shapes[shapeSelect.value];
+  methodSelect.innerHTML = Object.entries(shape.methods).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
+}
+function currentMethod(){ return shapes[shapeSelect.value].methods[methodSelect.value]; }
+
+function inputField(key, label, hint=''){
+  const v = state.values[key] ?? '';
+  return `
+    <div class="field" data-key="${key}">
+      <label for="${key}">${label}</label>
+      <input id="${key}" data-key="${key}" type="number" step="any" value="${v}" />
+      ${hint ? `<div class="hint">${hint}</div>` : ''}
+    </div>`;
+}
+
+function renderDiagram() {
+  const method = currentMethod();
+  let svg = '';
+  if (method.type.startsWith('triangle')) {
+    svg = `<svg viewBox="0 0 420 260" aria-label="triangle diagram">
+      <polygon points="70,210 330,210 190,60" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+      <text x="62" y="228" font-size="18">A</text>
+      <text x="334" y="228" font-size="18">B</text>
+      <text x="186" y="52" font-size="18">C</text>
+      <text x="194" y="228" font-size="16">c=AB</text>
+      <text x="115" y="145" font-size="16">b=AC</text>
+      <text x="255" y="145" font-size="16">a=BC</text>
+      <text x="93" y="196" font-size="14">∠A</text>
+      <text x="296" y="196" font-size="14">∠B</text>
+      <text x="187" y="85" font-size="14">∠C</text>
+      <line x1="190" y1="60" x2="190" y2="210" stroke="#94a3b8" stroke-dasharray="6 6"/>
+      <text x="197" y="144" font-size="16">高さh</text>
+    </svg>`;
+  } else if (shapeSelect.value === 'quadrilateral') {
+    svg = `<svg viewBox="0 0 420 260" aria-label="quadrilateral diagram">
+      <polygon points="70,190 160,65 325,90 350,205" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+      <line x1="70" y1="190" x2="325" y2="90" stroke="#10b981" stroke-width="2.5" stroke-dasharray="6 5"/>
+      <text x="56" y="206" font-size="18">A</text>
+      <text x="154" y="58" font-size="18">B</text>
+      <text x="329" y="88" font-size="18">C</text>
+      <text x="355" y="210" font-size="18">D</text>
+      <text x="188" y="133" font-size="16">対角線 AC</text>
+      <text x="102" y="122" font-size="14">AB</text>
+      <text x="234" y="70" font-size="14">BC</text>
+      <text x="338" y="150" font-size="14">CD</text>
+      <text x="180" y="214" font-size="14">DA</text>
+    </svg>`;
+  } else if (method.type === 'fan') {
+    const n = method.n;
+    const labels = n === 5 ? ['A','B','C','D','E'] : ['A','B','C','D','E','F'];
+    const pts = n === 5
+      ? '110,200 160,70 290,60 350,150 250,220'
+      : '110,200 150,90 260,60 340,115 320,215 200,230';
+    const arr = pts.split(' ').map(p => p.split(',').map(Number));
+    svg = `<svg viewBox="0 0 420 260" aria-label="fan diagram">
+      <polygon points="${pts}" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+      ${arr.slice(2).map(([x,y])=>`<line x1="${arr[0][0]}" y1="${arr[0][1]}" x2="${x}" y2="${y}" stroke="#10b981" stroke-width="2.5" stroke-dasharray="6 5"/>`).join('')}
+      ${arr.map(([x,y],i)=>`<text x="${x-12}" y="${y+18}" font-size="18">${labels[i]}</text>`).join('')}
+      <text x="118" y="186" font-size="14">Aから分割</text>
+      <text x="126" y="164" font-size="14">AB, AC, AD...</text>
+    </svg>`;
+  } else if (method.type === 'coords') {
+    const p = method.points;
+    svg = `<svg viewBox="0 0 420 260" aria-label="coordinates diagram">
+      <rect x="40" y="30" width="340" height="190" fill="#ffffff" stroke="#cbd5e1"/>
+      <line x1="70" y1="210" x2="360" y2="210" stroke="#64748b" stroke-width="2"/>
+      <line x1="70" y1="210" x2="70" y2="50" stroke="#64748b" stroke-width="2"/>
+      <text x="365" y="214" font-size="16">x</text>
+      <text x="64" y="46" font-size="16">y</text>
+      <text x="95" y="90" font-size="16">頂点を順番に入力</text>
+      <text x="95" y="118" font-size="16">${p}点の座標</text>
+      <text x="95" y="148" font-size="14">時計回り / 反時計回りどちらでも可</text>
+      <text x="95" y="176" font-size="14">交差しない順に入力</text>
+    </svg>`;
+  } else {
+    svg = `<svg viewBox="0 0 420 260"><text x="90" y="130" font-size="20">選択した方式の図を表示</text></svg>`;
+  }
+  diagramWrap.innerHTML = svg;
+}
+
+function renderFields(){
+  const method = currentMethod();
+  let html='';
+  if(method.type==='triangle-sss'){
+    html = `<div class="row3">${inputField('a','辺 a（BC, m）')}${inputField('b','辺 b（CA, m）')}${inputField('c','辺 c（AB, m）')}</div>`;
+  } else if(method.type==='triangle-sas'){
+    html = `<div class="row3">${inputField('side1','辺1（m）')}${inputField('side2','辺2（m）')}${inputField('angle','その間の角度（度）')}</div>`;
+  } else if(method.type==='triangle-asa'){
+    html = `<div class="row3">${inputField('knownSide','既知の1辺（m）','その辺の両端の角度を入れてください')}${inputField('angleL','角度1（度）')}${inputField('angleR','角度2（度）')}</div>`;
+  } else if(method.type==='triangle-baseheight'){
+    html = `<div class="row">${inputField('base','底辺（m）')}${inputField('height','高さ（m）')}</div>`;
+  } else if(method.type==='rectangle'){
+    html = `<div class="row">${inputField('width','横（m）')}${inputField('height','縦（m）')}</div>`;
+  } else if(method.type==='trapezoid'){
+    html = `<div class="row3">${inputField('top','上底（m）')}${inputField('bottom','下底（m）')}${inputField('height','高さ（m）')}</div>`;
+  } else if(method.type==='parallelogram'){
+    html = `<div class="row">${inputField('base','底辺（m）')}${inputField('height','高さ（m）')}</div>`;
+  } else if(method.type==='kite'){
+    html = `<div class="row">${inputField('d1','対角線1（m）')}${inputField('d2','対角線2（m）')}</div>`;
+  } else if(method.type==='quad-diagonal'){
+    html = `<div class="row3">${inputField('ab','AB（m）')}${inputField('bc','BC（m）')}${inputField('ac','対角線 AC（m）')}</div>
+            <div class="row3" style="margin-top:10px">${inputField('ad','AD（m）')}${inputField('cd','CD（m）')}${inputField('ac2','対角線 AC（確認用、同じ値でも可）','空欄なら上のACを使います')}</div>`;
+  } else if(method.type==='regular'){
+    html = `<div class="row">${inputField('side','1辺の長さ（m）')}${inputField('ninfo','辺の数','自動設定') .replace('type="number"','type="text" readonly') }</div>`;
+  } else if(method.type==='regular-apothem'){
+    html = `<div class="row">${inputField('perimeter','周長（m）')}${inputField('apothem','内接円半径（m）')}</div>`;
+  } else if(method.type==='fan'){
+    const n = method.n;
+    const rays = [];
+    for(let i=1;i<=n-1;i++) rays.push(inputField(`r${i}`, `Aから頂点${String.fromCharCode(64+i+1)}まで（m）`, i===1 ? 'r1=AB, r2=AC…' : ''));
+    const angs = [];
+    for(let i=1;i<=n-2;i++) angs.push(inputField(`theta${i}`, `Aでの角${i}（度）`, i===1 ? '∠BAC, ∠CAD…' : ''));
+    html = `<div class="row3">${rays.join('')}</div><div class="row3" style="margin-top:10px">${angs.join('')}</div>`;
+  } else if(method.type==='coords'){
+    let coordHtml='';
+    for(let i=1;i<=method.points;i++){
+      coordHtml += `<div class="row" style="margin-top:${i===1?0:10}px">${inputField(`x${i}`, `頂点${i} x（m）`)}${inputField(`y${i}`, `頂点${i} y（m）`)}</div>`;
+    }
+    html = coordHtml;
+  }
+  fieldsEl.innerHTML = html;
+
+  if (method.type === 'regular') {
+    const ninfo = document.getElementById('ninfo');
+    if (ninfo) ninfo.value = method.n;
+  }
+
+  document.querySelectorAll('input[data-key]').forEach(input=>{
+    input.addEventListener('input', e=>{
+      state.values[e.target.dataset.key] = e.target.value;
+      update();
+    });
+  });
+}
+
+function getRequiredKeys(){
+  const method = currentMethod();
+  if(method.type==='triangle-sss') return ['a','b','c'];
+  if(method.type==='triangle-sas') return ['side1','side2','angle'];
+  if(method.type==='triangle-asa') return ['knownSide','angleL','angleR'];
+  if(method.type==='triangle-baseheight') return ['base','height'];
+  if(method.type==='rectangle') return ['width','height'];
+  if(method.type==='trapezoid') return ['top','bottom','height'];
+  if(method.type==='parallelogram') return ['base','height'];
+  if(method.type==='kite') return ['d1','d2'];
+  if(method.type==='quad-diagonal') return ['ab','bc','ac','ad','cd'];
+  if(method.type==='regular') return ['side'];
+  if(method.type==='regular-apothem') return ['perimeter','apothem'];
+  if(method.type==='fan'){
+    const n = method.n;
+    const arr=[];
+    for(let i=1;i<=n-1;i++) arr.push(`r${i}`);
+    for(let i=1;i<=n-2;i++) arr.push(`theta${i}`);
+    return arr;
+  }
+  if(method.type==='coords'){
+    const arr=[];
+    for(let i=1;i<=method.points;i++){ arr.push(`x${i}`,`y${i}`); }
+    return arr;
+  }
+  return [];
+}
+
+function updateFieldColors(hasStarted, invalidKeys=[]){
+  const required = new Set(getRequiredKeys());
+  document.querySelectorAll('.field').forEach(box=>{
+    const key=box.dataset.key;
+    const v=num(state.values[key]);
+    box.classList.remove('done','need','invalid');
+    if(invalidKeys.includes(key)) box.classList.add('invalid');
+    else if(v !== null || (document.getElementById(key)?.readOnly)) box.classList.add('done');
+    else if(hasStarted && required.has(key)) box.classList.add('need');
+  });
+}
+
+function compute(){
+  const method = currentMethod();
+  const vals = {};
+  Object.keys(state.values).forEach(k => vals[k] = num(state.values[k]));
+  let area = NaN, formula = '', message = '', cls = 'warn', invalid=[];
+  const req = getRequiredKeys();
+  const hasStarted = req.some(k => state.values[k] !== '' && state.values[k] != null);
+  const missing = req.filter(k => vals[k] === null && !(method.type==='regular' && k==='side' && document.getElementById('side')?.value===''));
+
+  const allPositive = keys => keys.every(k => vals[k] > 0);
+
+  if(method.type==='triangle-sss'){
+    if(missing.length){ message = `あと必要: ${missing.join('、')}`; }
+    else if(!allPositive(['a','b','c'])) { message='長さは0より大きくしてください。'; invalid=['a','b','c']; cls='error'; }
+    else if(vals.a + vals.b <= vals.c || vals.b + vals.c <= vals.a || vals.c + vals.a <= vals.b){ message='三角形になりません。3辺の関係を確認してください。'; invalid=['a','b','c']; cls='error'; }
+    else {
+      const s=(vals.a+vals.b+vals.c)/2;
+      area=heron(vals.a,vals.b,vals.c);
+      formula=`ヘロンの公式\ns = (a + b + c) / 2\n面積 = √( s(s-a)(s-b)(s-c) )\n\ns = ${fmt(s)}\n面積 = ${fmt(area)} ㎡`;
+      cls='success'; message='計算できました。';
+    }
+  }
+  else if(method.type==='triangle-sas'){
+    if(missing.length){ message = `あと必要: ${missing.join('、')}`; }
+    else if(!allPositive(['side1','side2']) || !(vals.angle > 0 && vals.angle < 180)){ message='辺は0より大きく、角度は0〜180の間にしてください。'; invalid=['side1','side2','angle']; cls='error'; }
+    else {
+      area=0.5*vals.side1*vals.side2*Math.sin(deg2rad(vals.angle));
+      formula=`2辺とその間の角の公式\n面積 = 1/2 × 辺1 × 辺2 × sin(角)\n\n= 1/2 × ${fmt(vals.side1)} × ${fmt(vals.side2)} × sin(${fmt(vals.angle)})\n= ${fmt(area)} ㎡`;
+      cls='success'; message='計算できました。';
+    }
+  }
+  else if(method.type==='triangle-asa'){
+    if(missing.length){ message = `あと必要: ${missing.join('、')}`; }
+    else if(!allPositive(['knownSide']) || !(vals.angleL>0) || !(vals.angleR>0) || vals.angleL+vals.angleR>=180){ message='辺は0より大きく、2つの角の合計は180未満にしてください。'; invalid=['knownSide','angleL','angleR']; cls='error'; }
+    else {
+      const C = 180 - vals.angleL - vals.angleR;
+      area = (Math.pow(vals.knownSide,2) * Math.sin(deg2rad(vals.angleL)) * Math.sin(deg2rad(vals.angleR))) / (2 * Math.sin(deg2rad(C)));
+      formula=`1辺と両端の角の公式\n残りの角 C = 180 - 角1 - 角2\n面積 = c² sinA sinB / (2 sinC)\n\nC = ${fmt(C)} 度\n面積 = ${fmt(area)} ㎡`;
+      cls='success'; message='計算できました。';
+    }
+  }
+  else if(method.type==='triangle-baseheight'){
+    if(missing.length){ message = `あと必要: ${missing.join('、')}`; }
+    else if(!allPositive(['base','height'])) { message='底辺と高さは0より大きくしてください。'; invalid=['base','height']; cls='error'; }
+    else {
+      area = vals.base * vals.height / 2;
+      formula=`面積 = 底辺 × 高さ ÷ 2\n= ${fmt(vals.base)} × ${fmt(vals.height)} ÷ 2\n= ${fmt(area)} ㎡`;
+      cls='success'; message='計算できました。';
+    }
+  }
+  else if(method.type==='rectangle'){
+    if(missing.length){ message = `あと必要: ${missing.join('、')}`; }
+    else if(!allPositive(['width','height'])) { message='縦横は0より大きくしてください。'; invalid=['width','height']; cls='error'; }
+    else {
+      area = vals.width * vals.height;
+      formula=`面積 = 横 × 縦\n= ${fmt(vals.width)} × ${fmt(vals.height)}\n= ${fmt(area)} ㎡`;
+      cls='success'; message='計算できました。';
+    }
+  }
+  else if(method.type==='trapezoid'){
+    if(missing.length){ message = `あと必要: ${missing.join('、')}`; }
+    else if(!allPositive(['top','bottom','height'])) { message='上底・下底・高さは0より大きくしてください。'; invalid=['top','bottom','height']; cls='error'; }
+    else {
+      area = (vals.top + vals.bottom) * vals.height / 2;
+      formula=`台形の公式\n面積 = (上底 + 下底) × 高さ ÷ 2\n= (${fmt(vals.top)} + ${fmt(vals.bottom)}) × ${fmt(vals.height)} ÷ 2\n= ${fmt(area)} ㎡`;
+      cls='success'; message='計算できました。';
+    }
+  }
+  else if(method.type==='parallelogram'){
+    if(missing.length){ message = `あと必要: ${missing.join('、')}`; }
+    else if(!allPositive(['base','height'])) { message='底辺と高さは0より大きくしてください。'; invalid=['base','height']; cls='error'; }
+    else {
+      area = vals.base * vals.height;
+      formula=`平行四辺形の公式\n面積 = 底辺 × 高さ\n= ${fmt(vals.base)} × ${fmt(vals.height)}\n= ${fmt(area)} ㎡`;
+      cls='success'; message='計算できました。';
+    }
+  }
+  else if(method.type==='kite'){
+    if(missing.length){ message = `あと必要: ${missing.join('、')}`; }
+    else if(!allPositive(['d1','d2'])) { message='対角線は0より大きくしてください。'; invalid=['d1','d2']; cls='error'; }
+    else {
+      area = vals.d1 * vals.d2 / 2;
+      formula=`ひし形・凧形の公式\n面積 = 対角線1 × 対角線2 ÷ 2\n= ${fmt(vals.d1)} × ${fmt(vals.d2)} ÷ 2\n= ${fmt(area)} ㎡`;
+      cls='success'; message='計算できました。';
+    }
+  }
+  else if(method.type==='quad-diagonal'){
+    if(missing.length){ message = `あと必要: ${missing.join('、')}`; }
+    else {
+      const ac = vals.ac2 || vals.ac;
+      if(!['ab','bc','ac','ad','cd'].every(k=> vals[k] > 0) || !(ac > 0)){ message='すべての長さは0より大きくしてください。'; invalid=['ab','bc','ac','ad','cd','ac2']; cls='error'; }
+      else {
+        const area1 = heron(vals.ab, vals.bc, vals.ac);
+        const area2 = heron(vals.ad, vals.cd, ac);
+        if(!Number.isFinite(area1) || !Number.isFinite(area2) || area1===0 || area2===0){ message='入力値では、対角線ACで2つの三角形を作れません。'; invalid=['ab','bc','ac','ad','cd','ac2']; cls='error'; }
+        else {
+          area = area1 + area2;
+          formula=`四角形を対角線ACで2つの三角形に分ける\n面積 = △ABC + △ACD\n△ABC = ヘロン公式(${fmt(area1)}㎡)\n△ACD = ヘロン公式(${fmt(area2)}㎡)\n\n合計 = ${fmt(area)} ㎡`;
+          cls='success'; message='計算できました。';
+        }
+      }
+    }
+  }
+  else if(method.type==='regular'){
+    if(missing.length){ message='あと必要: side'; }
+    else if(!(vals.side > 0)){ message='1辺の長さは0より大きくしてください。'; invalid=['side']; cls='error'; }
+    else {
+      const n=method.n;
+      area = n * Math.pow(vals.side,2) / (4 * Math.tan(Math.PI/n));
+      formula=`正${n}角形の公式\n面積 = n s² / (4 tan(π/n))\n\nn=${n}, s=${fmt(vals.side)}\n面積 = ${fmt(area)} ㎡`;
+      cls='success'; message='計算できました。';
+    }
+  }
+  else if(method.type==='regular-apothem'){
+    if(missing.length){ message = `あと必要: ${missing.join('、')}`; }
+    else if(!allPositive(['perimeter','apothem'])) { message='周長と内接円半径は0より大きくしてください。'; invalid=['perimeter','apothem']; cls='error'; }
+    else {
+      area = vals.perimeter * vals.apothem / 2;
+      formula=`正多角形の公式\n面積 = 周長 × 内接円半径 ÷ 2\n= ${fmt(vals.perimeter)} × ${fmt(vals.apothem)} ÷ 2\n= ${fmt(area)} ㎡`;
+      cls='success'; message='計算できました。';
+    }
+  }
+  else if(method.type==='fan'){
+    const n = method.n;
+    const rayKeys = Array.from({length:n-1},(_,i)=>`r${i+1}`);
+    const thetaKeys = Array.from({length:n-2},(_,i)=>`theta${i+1}`);
+    if(missing.length){ message = `あと必要: ${missing.join('、')}`; }
+    else if(!rayKeys.every(k=>vals[k]>0) || !thetaKeys.every(k=>vals[k]>0 && vals[k] < 180)) {
+      message='長さは0より大きく、角度は0〜180の間にしてください。'; invalid=[...rayKeys,...thetaKeys]; cls='error';
+    } else {
+      area = 0;
+      const parts=[];
+      for(let i=1;i<=n-2;i++){
+        const part = 0.5 * vals[`r${i}`] * vals[`r${i+1}`] * Math.sin(deg2rad(vals[`theta${i}`]));
+        area += part;
+        parts.push(`三角形${i}: 1/2×${fmt(vals[`r${i}`])}×${fmt(vals[`r${i+1}`])}×sin(${fmt(vals[`theta${i}`])}) = ${fmt(part)}㎡`);
+      }
+      formula = `1点Aから三角形に分割\n面積 = 各三角形の和\n${parts.join('\n')}\n\n合計 = ${fmt(area)} ㎡`;
+      cls='success'; message='計算できました。';
+    }
+  }
+  else if(method.type==='coords'){
+    const points=[];
+    for(let i=1;i<=method.points;i++){
+      const x=vals[`x${i}`], y=vals[`y${i}`];
+      if(x===null || y===null){ message = `あと必要: x${i}, y${i}`; area = NaN; break; }
+      points.push([x,y]);
+    }
+    if(points.length===method.points){
+      const uniq = new Set(points.map(p=>`${p[0]},${p[1]}`));
+      if(uniq.size < points.length){ message='同じ座標が重複しています。'; cls='error'; invalid=points.flatMap((_,i)=>[`x${i+1}`,`y${i+1}`]); }
+      else {
+        area = polygonAreaFromCoords(points);
+        if(area===0){ message='面積が0です。点の順番や座標を確認してください。'; cls='error'; }
+        else {
+          formula = `座標から求める公式（靴紐公式）\n面積 = 1/2 × |Σ(x_i y_{i+1} - y_i x_{i+1})|\n\n計算結果 = ${fmt(area)} ㎡`;
+          cls='success'; message='計算できました。';
+        }
+      }
+    }
+  }
+
+  return { area, formula, message, cls, hasStarted, invalid };
+}
+
+function update(){
+  renderDiagram();
+  const { area, formula, message, cls, hasStarted, invalid } = compute();
+  updateFieldColors(hasStarted, invalid);
+  setMessage(cls, message);
+  sqmEl.textContent = Number.isFinite(area) ? fmt(area, 6) : '—';
+  tsuboEl.textContent = Number.isFinite(area) ? fmt(area / SQM_PER_TSUBO, 6) : '—';
+  formulaEl.textContent = formula || '—';
+}
+
+shapeSelect.addEventListener('change', ()=>{
+  populateMethodOptions();
+  state.values = {};
+  renderFields();
+  update();
+});
+methodSelect.addEventListener('change', ()=>{
+  state.values = {};
+  renderFields();
+  update();
+});
+clearBtn.addEventListener('click', ()=>{
+  state.values = {};
+  renderFields();
+  update();
+});
+
+sampleBtn.addEventListener('click', ()=>{
+  const type = currentMethod().type;
+  const samples = {
+    'triangle-sss': { a:3, b:4, c:5 },
+    'triangle-sas': { side1:5, side2:7, angle:40 },
+    'triangle-asa': { knownSide:6, angleL:50, angleR:60 },
+    'triangle-baseheight': { base:6, height:4 },
+    'rectangle': { width:4.5, height:3.2 },
+    'trapezoid': { top:3, bottom:5, height:2.8 },
+    'parallelogram': { base:6, height:2.5 },
+    'kite': { d1:4, d2:7 },
+    'quad-diagonal': { ab:3, bc:4, ac:5, ad:4, cd:3, ac2:5 },
+    'regular': { side:3 },
+    'regular-apothem': { perimeter:20, apothem:2.75 },
+    'fan': { r1:4, r2:5, r3:4.5, r4:4.2, theta1:40, theta2:55, theta3:35 },
+    'coords-3': { x1:0,y1:0,x2:5,y2:0,x3:2,y3:4 },
+    'coords-4': { x1:0,y1:0,x2:5,y2:0,x3:6,y3:3,x4:1,y4:4 },
+    'coords-5': { x1:0,y1:0,x2:4,y2:0,x3:6,y3:2,x4:3,y4:5,x5:-1,y5:3 },
+    'coords-6': { x1:0,y1:0,x2:3,y2:0,x3:5,y3:2,x4:4,y4:5,x5:1,y5:6,x6:-1,y6:3 }
+  };
+  let sample = samples[type];
+  if(type === 'coords') sample = samples[`coords-${currentMethod().points}`];
+  if(type === 'fan') {
+    const n = currentMethod().n;
+    sample = n === 5 ? { r1:4,r2:5,r3:4.2,r4:3.9,theta1:35,theta2:60,theta3:45 } : { r1:4,r2:5,r3:4.2,r4:4.6,r5:4.1,theta1:30,theta2:45,theta3:40,theta4:35 };
+  }
+  state.values = { ...sample };
+  renderFields();
+  update();
+});
+
+populateShapeOptions();
+populateMethodOptions();
+renderFields();
+update();
+
+
+
+// ===== JPEG書き出し共通 =====
+function makeA4Canvas() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1240;
+  canvas.height = 1754;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  return { canvas, ctx };
+}
+function rr(ctx, x, y, w, h, r=18) {
+  const radius = Math.min(r, w/2, h/2);
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.arcTo(x + w, y, x + w, y + h, radius);
+  ctx.arcTo(x + w, y + h, x, y + h, radius);
+  ctx.arcTo(x, y + h, x, y, radius);
+  ctx.arcTo(x, y, x + w, y, radius);
+  ctx.closePath();
+}
+function fillStrokeBox(ctx, x, y, w, h, fill, stroke, lineWidth=2, radius=18) {
+  rr(ctx, x, y, w, h, radius);
+  ctx.fillStyle = fill;
+  ctx.fill();
+  ctx.lineWidth = lineWidth;
+  ctx.strokeStyle = stroke;
+  ctx.stroke();
+}
+function drawSheetHeader(ctx, title, subtitle) {
+  ctx.fillStyle = '#0f172a';
+  ctx.fillRect(0, 0, 1240, 116);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 44px sans-serif';
+  ctx.fillText(title, 64, 68);
+  ctx.font = '24px sans-serif';
+  ctx.fillStyle = '#dbeafe';
+  ctx.fillText(subtitle, 64, 100);
+}
+function drawSheetFooter(ctx, text) {
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(64, 1692);
+  ctx.lineTo(1176, 1692);
+  ctx.stroke();
+  ctx.fillStyle = '#475569';
+  ctx.font = '18px sans-serif';
+  drawWrappedText(ctx, text, 64, 1722, 1112, 24, '#475569');
+}
+function drawLabelValue(ctx, label, value, x, y, labelW=220) {
+  ctx.fillStyle = '#475569';
+  ctx.font = 'bold 22px sans-serif';
+  ctx.fillText(label, x, y);
+  ctx.fillStyle = '#111827';
+  ctx.font = '23px sans-serif';
+  ctx.fillText(value, x + labelW, y);
+}
+function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight, color = '#111827') {
+  ctx.fillStyle = color;
+  const lines = String(text || '').split('\n');
+  let cy = y;
+  for (const raw of lines) {
+    const chars = [...raw];
+    let line = '';
+    for (const ch of chars) {
+      const test = line + ch;
+      if (ctx.measureText(test).width > maxWidth && line) {
+        ctx.fillText(line, x, cy);
+        cy += lineHeight;
+        line = ch;
+      } else {
+        line = test;
+      }
+    }
+    ctx.fillText(line, x, cy);
+    cy += lineHeight;
+  }
+  return cy;
+}
+function dataURLToBlob(dataURL) {
+  const arr = dataURL.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) u8arr[n] = bstr.charCodeAt(n);
+  return new Blob([u8arr], { type: mime });
+}
+async function saveOrShareCanvasAsJpeg(canvas, filenameBase, share = true) {
+  const dataURL = canvas.toDataURL('image/jpeg', 0.94);
+  const blob = dataURLToBlob(dataURL);
+  const file = new File([blob], `${filenameBase}.jpg`, { type: 'image/jpeg' });
+
+  const a = document.createElement('a');
+  a.href = dataURL;
+  a.download = file.name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  if (share && navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], title: filenameBase, text: `${filenameBase} のJPEGです。` });
+    } catch (e) {}
   }
 }
-function closeCamera(hide=true){
-  if(state.camStream){state.camStream.getTracks().forEach(t=>t.stop());state.camStream=null}
-  $('cameraVideo').srcObject=null;
-  if(hide)$('cameraModal').classList.add('hidden');
+async function saveMultipleCanvasAsJpegs(items) {
+  if (!items.length) return;
+  const canShareFiles = navigator.canShare && navigator.canShare({ files: items.map(it => new File([dataURLToBlob(it.canvas.toDataURL('image/jpeg', 0.94))], `${it.filename}.jpg`, { type: 'image/jpeg' })) });
+
+  if (canShareFiles) {
+    try {
+      const files = items.map(it => {
+        const blob = dataURLToBlob(it.canvas.toDataURL('image/jpeg', 0.94));
+        return new File([blob], `${it.filename}.jpg`, { type: 'image/jpeg' });
+      });
+      await navigator.share({ files, title: items[0].filename, text: `${items.length} 枚のJPEGです。` });
+      return;
+    } catch (e) {}
+  }
+
+  for (let i = 0; i < items.length; i++) {
+    await saveOrShareCanvasAsJpeg(items[i].canvas, items[i].filename, false);
+    await new Promise(r => setTimeout(r, 220));
+  }
 }
-function captureFromCamera(){
-  const v=$('cameraVideo');
-  if(!v.videoWidth)return alert('カメラ準備中です');
-  const c=document.createElement('canvas');
-  const max=1600,sc=Math.min(1,max/Math.max(v.videoWidth,v.videoHeight));
-  c.width=Math.round(v.videoWidth*sc);c.height=Math.round(v.videoHeight*sc);
-  c.getContext('2d').drawImage(v,0,0,c.width,c.height);
-  state.pendingPhoto=c.toDataURL('image/jpeg',.82);
-  state.pendingSrc='cameraGuide';
-  closeCamera();
-  $('previewImg').src=state.pendingPhoto;
-  $('confirmModal').classList.remove('hidden');
-  $('usePreview').onclick=usePending;
-  $('retryPreview').onclick=()=>{dropPending(false);openCamera()};
-  $('dropPreview').onclick=()=>dropPending(true);
+function nowStamp() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  return `${y}${m}${day}_${hh}${mm}`;
+}
+function safeFileName(name) {
+  return String(name || 'output').replace(/[\\/:*?"<>|]/g, '_').trim() || 'output';
+}
+function svgStringToDataURL(svgEl) {
+  const xml = new XMLSerializer().serializeToString(svgEl);
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml);
+}
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+async function exportPolygonSheet() {
+  const { area, formula } = compute();
+  if (!Number.isFinite(area)) {
+    alert('面積計算側で有効な計算結果を出してからJPEGを書き出してください。');
+    return;
+  }
+  const { canvas, ctx } = makeA4Canvas();
+  const pad = 64;
+  const fullW = canvas.width - pad * 2;
+
+  drawSheetHeader(ctx, '面積計算シート', 'A4記録用・印刷向けレイアウト');
+  drawLabelValue(ctx, '作成日時', new Date().toLocaleString('ja-JP'), pad, 162);
+  drawLabelValue(ctx, '図形', shapes[shapeSelect.value].label, pad, 200);
+  drawLabelValue(ctx, '計算方式', currentMethod().label, pad, 238);
+
+  fillStrokeBox(ctx, pad, 270, fullW, 140, '#eff6ff', '#93c5fd', 3, 24);
+  ctx.fillStyle = '#1d4ed8';
+  ctx.font = 'bold 26px sans-serif';
+  ctx.fillText('計算結果', pad + 24, 310);
+  ctx.fillStyle = '#0f172a';
+  ctx.font = 'bold 46px sans-serif';
+  ctx.fillText(`${fmt(area, 6)} ㎡`, pad + 24, 360);
+  ctx.font = 'bold 38px sans-serif';
+  ctx.fillStyle = '#334155';
+  ctx.fillText(`${fmt(area / SQM_PER_TSUBO, 6)} 坪`, pad + 24, 398);
+
+  fillStrokeBox(ctx, pad, 438, 470, 420, '#ffffff', '#cbd5e1', 2, 22);
+  ctx.fillStyle = '#111827';
+  ctx.font = 'bold 26px sans-serif';
+  ctx.fillText('図', pad + 18, 474);
+  const svgEl = diagramWrap.querySelector('svg');
+  if (svgEl) {
+    try {
+      const img = await loadImage(svgStringToDataURL(svgEl));
+      const boxX = pad + 18, boxY = 494, boxW = 434, boxH = 336;
+      const scale = Math.min(boxW / img.width, boxH / img.height);
+      const w = img.width * scale;
+      const h = img.height * scale;
+      ctx.drawImage(img, boxX + (boxW - w) / 2, boxY + (boxH - h) / 2, w, h);
+    } catch (e) {}
+  }
+
+  fillStrokeBox(ctx, pad + 494, 438, fullW - 494, 420, '#ffffff', '#cbd5e1', 2, 22);
+  ctx.fillStyle = '#111827';
+  ctx.font = 'bold 26px sans-serif';
+  ctx.fillText('入力値', pad + 512, 474);
+  let y = 512;
+  const keys = getRequiredKeys();
+  ctx.font = '23px sans-serif';
+  if (!keys.length) {
+    ctx.fillText('入力値なし', pad + 512, y);
+  } else {
+    for (const key of keys) {
+      const label = document.querySelector(`label[for="${key}"]`)?.textContent || key;
+      const val = state.values[key] ?? '';
+      drawWrappedText(ctx, `・${label}: ${val}`, pad + 512, y, fullW - 530, 31, '#111827');
+      y += 34;
+      if (y > 820) break;
+    }
+  }
+
+  fillStrokeBox(ctx, pad, 890, fullW, 720, '#f8fafc', '#cbd5e1', 2, 22);
+  ctx.fillStyle = '#111827';
+  ctx.font = 'bold 28px sans-serif';
+  ctx.fillText('計算式・メモ', pad + 22, 930);
+  ctx.font = '24px sans-serif';
+  drawWrappedText(ctx, formula || '—', pad + 22, 976, fullW - 44, 34, '#111827');
+
+  drawSheetFooter(ctx, 'このシートはアプリで計算した結果をA4 1枚のJPEGにまとめたものです。単位は面積=㎡、坪数=坪です。');
+  await saveOrShareCanvasAsJpeg(canvas, `面積計算_A4_${safeFileName(shapes[shapeSelect.value].label)}_${nowStamp()}`);
 }
 
-function ensurePhotoSlot(){const t=target();if(!t)return;if(state.pi<0){t.photos.push(newPhotoObj(''));state.pi=t.photos.length-1;renderAll()}}
-async function fileChosen(e,isCam){const f=e.target.files&&e.target.files[0];if(!f)return;const data=await shrinkImage(f,1600,.82);state.pendingPhoto=data;state.pendingSrc=isCam?'camera':'file';$('previewImg').src=data;$('confirmModal').classList.remove('hidden');$('usePreview').onclick=usePending;$('retryPreview').onclick=()=>{dropPending(false);(isCam?$('cameraInput'):$('fileInput')).click()};$('dropPreview').onclick=()=>dropPending(true)}
-function dropPending(close){state.pendingPhoto=null;if(close)$('confirmModal').classList.add('hidden')}
-function usePending(){const t=target();if(!t||state.replaceIndex==null)return;while(t.photos.length<=state.replaceIndex)t.photos.push(newPhotoObj(''));const old=t.photos[state.replaceIndex]||newPhotoObj('');t.photos[state.replaceIndex]={...old,src:state.pendingPhoto,scale:null,ranges:[],w:0,h:0};state.pi=state.replaceIndex;state.pendingPhoto=null;$('confirmModal').classList.add('hidden');state.currentPts=[];renderAll()}
-function shrinkImage(file,max,quality){return new Promise((res,rej)=>{const img=new Image();const r=new FileReader();r.onload=()=>{img.onload=()=>{let w=img.naturalWidth,h=img.naturalHeight,s=Math.min(1,max/Math.max(w,h));w=Math.round(w*s);h=Math.round(h*s);const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',quality))};img.onerror=rej;img.src=r.result};r.onerror=rej;r.readAsDataURL(file)})}
-function renderAll(){renderTargets();renderPhotos();const t=target();if(t){$('targetName').value=t.name;$('purpose').value=t.purpose||'その他'}$('statePill').textContent=state.mode==='range'?'範囲モード':'基準線モード';$('drawGuide').classList.toggle('hidden',!state.guide);$('stageBox').classList.toggle('drawMode',!!photo());loadStage();renderTables()}
-function renderTargets(){const d=$('targetList');d.innerHTML='';state.targets.forEach((t,i)=>{const e=document.createElement('div');e.className='targetItem';e.innerHTML=`<span class="${i===state.ti?'activePill pill':'pill'}">${esc(t.name)} / ${esc(t.purpose||'')}</span><span><button class="btn">選択</button><button class="btn bad">削除</button></span>`;e.querySelectorAll('button')[0].onclick=()=>{state.ti=i;state.pi=t.photos.length?0:-1;state.currentPts=[];renderAll()};e.querySelectorAll('button')[1].onclick=()=>{if(state.targets.length===1)return alert('対象は1つ以上必要です');state.targets.splice(i,1);state.ti=Math.max(0,state.ti-1);state.pi=-1;renderAll()};d.appendChild(e)})}
-function renderPhotos(){const d=$('photoList');d.innerHTML='';const t=target();if(!t)return;t.photos.forEach((p,i)=>{const e=document.createElement('div');e.className='photoItem';e.innerHTML=`<span class="${i===state.pi?'activePill pill':'pill'}">${esc(p.name)} ${p.src?'✓':'未設定'} / 範囲${p.ranges.length}</span><button class="btn">選択</button>`;e.querySelector('button').onclick=()=>{state.pi=i;state.currentPts=[];renderAll()};d.appendChild(e)})}
-function loadStage(){const p=photo();const img=$('stageImg');if(!p||!p.src){img.removeAttribute('src');fitCanvas();draw();return}img.onload=()=>{p.w=img.naturalWidth;p.h=img.naturalHeight;fitCanvas();draw()};img.src=p.src;$('scaleMm').value=p.scale?.mm||''}
-function fitCanvas(){const img=$('stageImg'),c=$('canvas');const r=img.getBoundingClientRect();c.width=Math.max(1,Math.round(r.width*devicePixelRatio));c.height=Math.max(1,Math.round(r.height*devicePixelRatio));c.style.width=r.width+'px';c.style.height=r.height+'px';draw()}
-function pos(ev){const c=$('canvas'),r=c.getBoundingClientRect();return{x:(ev.clientX-r.left)/r.width,y:(ev.clientY-r.top)/r.height}}
-function down(ev){if(!photo())return;ev.preventDefault();state.drawing=true;state.dragStart=pos(ev);state.tempEnd=state.dragStart;$('stageBox').classList.add('drawMode')}
-function move(ev){if(!state.drawing)return;ev.preventDefault();state.tempEnd=pos(ev);draw()}
-function up(ev){if(!state.drawing)return;ev.preventDefault();const a=state.dragStart,b=pos(ev);state.drawing=false;state.tempEnd=null;if(dist(a,b)<.01){draw();return}const p=photo();if(state.mode==='scale'){p.scale={a,b,mm:Number($('scaleMm').value)||0};calcAll()}else{if(state.currentPts.length===0)state.currentPts.push(a);state.currentPts.push(b);if(state.currentPts.length>=4&&dist(b,state.currentPts[0])<.045)closeRange(false)}$('stageBox').classList.remove('drawMode');draw();renderTables()}
-function closeRange(force){const p=photo();if(!p||state.mode!=='range'||state.currentPts.length<3)return;const pts=state.currentPts.slice();if(force||dist(pts[pts.length-1],pts[0])<.08)pts[pts.length-1]=pts[0];else return;const clean=pts.slice(0,-1);if(clean.length<3)return;const nm=$('rangeName').value.trim()||'範囲'+(p.ranges.length+1);p.ranges.push({id:uid('r'),name:nm,points:clean,areaM2:0,areaTsubo:0,edges:[],angles:[]});state.currentPts=[];calcAll();draw();renderTables()}
-function mmPerUnit(p){if(!p.scale||!p.scale.mm)return 0;return p.scale.mm/dist(p.scale.a,p.scale.b)}function calcAll(){state.targets.forEach(t=>{t.photos.forEach(p=>{const m=mmPerUnit(p);p.ranges.forEach(r=>{r.edges=[];r.angles=[];let area=0;for(let i=0;i<r.points.length;i++){const a=r.points[i],b=r.points[(i+1)%r.points.length];area+=a.x*b.y-b.x*a.y;r.edges.push(m?dist(a,b)*m:0)}r.areaM2=m?Math.abs(area/2)*m*m/1000000:0;r.areaTsubo=r.areaM2/3.305785;for(let i=0;i<r.points.length;i++){const prev=r.points[(i-1+r.points.length)%r.points.length],cur=r.points[i],next=r.points[(i+1)%r.points.length];r.angles.push(angle(prev,cur,next))}})})})}
-function draw(){const c=$('canvas'),ctx=c.getContext('2d');ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,c.width,c.height);ctx.scale(c.width,c.height);ctx.lineCap='round';ctx.lineJoin='round';const p=photo();if(!p)return;if(p.scale)line(ctx,p.scale.a,p.scale.b,'#00e5ff',.006);p.ranges.forEach((r,idx)=>drawRange(ctx,r,idx));if(state.currentPts.length){for(let i=0;i<state.currentPts.length-1;i++)line(ctx,state.currentPts[i],state.currentPts[i+1],'#ffdd33',.006);dot(ctx,state.currentPts[0],'#00ff9d');if(state.drawing&&state.dragStart&&state.tempEnd)line(ctx,state.dragStart,state.tempEnd,'#ffdd33',.005)}else if(state.drawing&&state.dragStart&&state.tempEnd)line(ctx,state.dragStart,state.tempEnd,state.mode==='scale'?'#00e5ff':'#ffdd33',.005)}
-function drawRange(ctx,r,idx){ctx.beginPath();r.points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fillStyle='rgba(255,221,51,.18)';ctx.fill();ctx.strokeStyle='#ffdd33';ctx.lineWidth=.006;ctx.stroke();r.points.forEach(p=>dot(ctx,p,'#fff'));const cen=r.points.reduce((a,p)=>({x:a.x+p.x/r.points.length,y:a.y+p.y/r.points.length}),{x:0,y:0});label(ctx,cen,`${r.name} ${r.areaM2.toFixed(3)}㎡ ${r.areaTsubo.toFixed(3)}坪`);for(let i=0;i<r.points.length;i++){const a=r.points[i],b=r.points[(i+1)%r.points.length],m={x:(a.x+b.x)/2,y:(a.y+b.y)/2};if(r.edges[i])label(ctx,m,`${Math.round(r.edges[i])}mm`);label(ctx,r.points[i],`${Math.round(r.angles[i]||0)}°`,true)}}
-function line(ctx,a,b,color,w){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=color;ctx.lineWidth=w;ctx.stroke()}function dot(ctx,p,color){ctx.beginPath();ctx.arc(p.x,p.y,.011,0,7);ctx.fillStyle=color;ctx.fill();ctx.strokeStyle='#111';ctx.lineWidth=.002;ctx.stroke()}function label(ctx,p,txt,small){ctx.save();ctx.font=(small?'.025px':'.032px')+' sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';const w=ctx.measureText(txt).width+.02;ctx.fillStyle='rgba(0,0,0,.62)';ctx.fillRect(p.x-w/2,p.y-.022,w,.044);ctx.fillStyle='#fff';ctx.fillText(txt,p.x,p.y);ctx.restore()}
-function renderTables(){calcAll();let rows=[],trg=[];let grand=0;state.targets.forEach(t=>{let ts=0;t.photos.forEach(p=>p.ranges.forEach(r=>{ts+=r.areaM2;rows.push([t.name,p.name,r.name,r.areaM2,r.areaTsubo,r.edges.map(x=>Math.round(x)).join(' / '),r.angles.map(x=>Math.round(x)).join(' / ')])}));grand+=ts;trg.push([t.name,t.purpose||'',ts,ts/3.305785])});$('rangeTable').innerHTML='<thead><tr><th>対象</th><th>写真</th><th>範囲</th><th>㎡</th><th>坪</th><th>辺mm</th><th>角度°</th></tr></thead><tbody>'+rows.map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${r[3].toFixed(3)}</td><td>${r[4].toFixed(3)}</td><td>${esc(r[5])}</td><td>${esc(r[6])}</td></tr>`).join('')+'</tbody>'; $('targetTable').innerHTML='<thead><tr><th>対象</th><th>用途</th><th>㎡</th><th>坪</th></tr></thead><tbody>'+trg.map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${r[2].toFixed(3)}</td><td>${r[3].toFixed(3)}</td></tr>`).join('')+'</tbody>';$('grandTotal').textContent=`全体合計：${grand.toFixed(3)}㎡ / ${(grand/3.305785).toFixed(3)}坪`}
-async function saveA4(kind){calcAll();const W=1240,H=1754,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,W,H);x.fillStyle='#111';x.font='34px sans-serif';x.fillText(kind==='photo'?'現在写真A4':'対象まとめA4',40,55);x.font='22px sans-serif';let y=95;const t=target();if(!t)return alert('対象がありません');x.fillText(`${t.name} / ${t.purpose||''}`,40,y);y+=30;const photos=kind==='photo'?[photo()].filter(Boolean):t.photos;for(const p of photos){if(!p)continue;x.fillStyle='#111';x.font='20px sans-serif';x.fillText(`${p.name}`,40,y);y+=10;await drawPhotoBlock(x,p,40,y,520,390);let tx=600,ty=y+15;x.font='18px sans-serif';p.ranges.forEach(r=>{if(ty>H-70)return;x.fillStyle='#111';x.fillText(`${r.name}: ${r.areaM2.toFixed(3)}㎡ / ${r.areaTsubo.toFixed(3)}坪`,tx,ty);ty+=26;x.fillStyle='#555';x.fillText(`辺mm ${r.edges.map(v=>Math.round(v)).join(' / ')}`,tx,ty);ty+=24;x.fillText(`角度 ${r.angles.map(v=>Math.round(v)).join(' / ')}°`,tx,ty);ty+=30});y+=430;if(y>H-120)break}downloadCanvas(c,`${kind==='photo'?'photo':'target'}_A4_${dateStr()}.jpg`)}
-async function drawPhotoBlock(ctx,p,x,y,w,h){ctx.save();ctx.strokeStyle='#ccc';ctx.strokeRect(x,y,w,h);if(!p.src){ctx.fillStyle='#555';ctx.fillText('写真なし（JSON復元後は再設定）',x+20,y+40);ctx.restore();return}try{const im=await loadImage(p.src);ctx.drawImage(im,x,y,w,h)}catch(e){ctx.fillText('写真読込不可',x+20,y+40)}ctx.translate(x,y);ctx.scale(w,h);p.ranges.forEach(r=>drawRange(ctx,r,0));if(p.scale)line(ctx,p.scale.a,p.scale.b,'#00a',.004);ctx.restore()}
-function loadImage(src){return new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=rej;im.src=src})}
-function downloadCanvas(c,name){const a=document.createElement('a');a.href=c.toDataURL('image/jpeg',.82);a.download=name;a.click()}
-function exportJson(){calcAll();const data={version:1,created:new Date().toISOString(),targets:state.targets.map(t=>({id:t.id,name:t.name,purpose:t.purpose,photos:t.photos.map(p=>({id:p.id,name:p.name,w:p.w,h:p.h,scale:p.scale,ranges:p.ranges.map(r=>({id:r.id,name:r.name,points:r.points,areaM2:r.areaM2,areaTsubo:r.areaTsubo,edges:r.edges,angles:r.angles}))}))}))};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='area_backup_no_images_'+dateStr()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
-function importJson(e){const f=e.target.files&&e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);state.targets=(d.targets||[]).map(t=>({id:t.id||uid('t'),name:t.name||'対象',purpose:t.purpose||'その他',photos:(t.photos||[]).map(p=>({id:p.id||uid('p'),name:p.name||'写真',src:'',w:p.w||0,h:p.h||0,scale:p.scale||null,ranges:(p.ranges||[]).map(r=>({id:r.id||uid('r'),name:r.name||'範囲',points:r.points||[],areaM2:r.areaM2||0,areaTsubo:r.areaTsubo||0,edges:r.edges||[],angles:r.angles||[]}))}))}));if(!state.targets.length)state.targets=[newTarget('対象1')];state.ti=0;state.pi=state.targets[0].photos.length?0:-1;renderAll();alert('画像なしJSONを読み込みました。写真は再設定してください。')}catch(err){alert('JSONを読み込めません: '+err.message)}};r.readAsText(f)}
-function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}function angle(a,b,c){const v1={x:a.x-b.x,y:a.y-b.y},v2={x:c.x-b.x,y:c.y-b.y};const d=Math.hypot(v1.x,v1.y)*Math.hypot(v2.x,v2.y);return d?Math.acos(Math.max(-1,Math.min(1,(v1.x*v2.x+v1.y*v2.y)/d)))*180/Math.PI:0}function esc(s){return String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}function dateStr(){return new Date().toISOString().slice(0,10).replaceAll('-','')}
-init();
+(function addPolygonExportButton(){
+  const resultCard = document.querySelector('.grid .card:last-child');
+  if (!resultCard || document.getElementById('exportPolygonBtn')) return;
+  const row = document.createElement('div');
+  row.className = 'toolbarRow';
+  row.innerHTML = `<button id="exportPolygonBtn" type="button">面積計算を帳票A4 JPEGで保存</button>`;
+  const details = resultCard.querySelector('details');
+  resultCard.insertBefore(row, details);
+  document.getElementById('exportPolygonBtn').addEventListener('click', exportPolygonSheet);
 })();
+
+// ===== 写真から土壁面積（部屋ごと管理） =====
+const roomCardsEl = document.getElementById('roomCards');
+const addRoomBtn = document.getElementById('addRoomBtn');
+const saveJsonBtn = document.getElementById('saveJsonBtn');
+const loadJsonBtn = document.getElementById('loadJsonBtn');
+const loadJsonInput = document.getElementById('loadJsonInput');
+const jsonStatusEl = document.getElementById('jsonStatus');
+const clearRoomsBtn = document.getElementById('clearRoomsBtn');
+const roomCountEl = document.getElementById('roomCount');
+const houseTotalSqmEl = document.getElementById('houseTotalSqm');
+const houseTotalTsuboEl = document.getElementById('houseTotalTsubo');
+
+const houseState = { rooms: [], nextRoomId: 1, nextWallId: 1, nextPhotoId: 1 };
+
+function clientToCanvas(evt, canvas){
+  const rect = canvas.getBoundingClientRect();
+  const src = evt.touches ? evt.touches[0] : evt;
+  const x = (src.clientX - rect.left) * (canvas.width / rect.width);
+  const y = (src.clientY - rect.top) * (canvas.height / rect.height);
+  return { x, y };
+}
+function pixelDistance(p1,p2){ return Math.hypot(p1.x-p2.x, p1.y-p2.y); }
+function polygonAreaPx(points){
+  let s = 0;
+  for(let i=0;i<points.length;i++){
+    const p1 = points[i], p2 = points[(i+1)%points.length];
+    s += p1.x * p2.y - p1.y * p2.x;
+  }
+  return Math.abs(s)/2;
+}
+function drawDot(ctx, p, color, r=7){
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, r, 0, Math.PI*2);
+  ctx.fillStyle = color;
+  ctx.fill();
+}
+function drawPhotoCard(card){
+  const ctx = card.canvas.getContext('2d');
+  ctx.clearRect(0,0,card.canvas.width, card.canvas.height);
+  if(card.image){
+    ctx.drawImage(card.image, 0,0, card.canvas.width, card.canvas.height);
+  } else {
+    ctx.fillStyle = '#f3f4f6';
+    ctx.fillRect(0,0,card.canvas.width, card.canvas.height);
+    ctx.fillStyle = '#6b7280';
+    ctx.font = '24px sans-serif';
+    ctx.fillText('ここに写真を読み込みます', 40, 80);
+  }
+
+  if(card.scalePoints.length){
+    ctx.strokeStyle = '#2563eb';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(card.scalePoints[0].x, card.scalePoints[0].y);
+    if(card.scalePoints[1]) ctx.lineTo(card.scalePoints[1].x, card.scalePoints[1].y);
+    ctx.stroke();
+    card.scalePoints.forEach((p,i)=>{
+      drawDot(ctx, p, '#2563eb', 8);
+      ctx.fillStyle = '#111827'; ctx.font = '16px sans-serif';
+      ctx.fillText(i===0 ? 'S1' : 'S2', p.x+8, p.y-10);
+    });
+  }
+
+  if(card.soilPoints.length){
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(card.soilPoints[0].x, card.soilPoints[0].y);
+    for(let i=1;i<card.soilPoints.length;i++) ctx.lineTo(card.soilPoints[i].x, card.soilPoints[i].y);
+    if(card.soilClosed && card.soilPoints.length >= 3) ctx.closePath();
+    ctx.stroke();
+
+    if(card.soilClosed && card.soilPoints.length >= 3){
+      ctx.save();
+      ctx.fillStyle = 'rgba(16,185,129,0.18)';
+      ctx.fill();
+      ctx.restore();
+    }
+    card.soilPoints.forEach((p,idx)=>{
+      drawDot(ctx, p, '#10b981', 7);
+      ctx.fillStyle = '#111827'; ctx.font = '12px sans-serif';
+      ctx.fillText(String(idx+1), p.x+8, p.y-8);
+    });
+  }
+}
+function calcPhotoArea(card){
+  const knownLen = parseFloat(card.lengthInput.value);
+  const soilReady = card.soilClosed && card.soilPoints.length >= 3;
+  let msg = '';
+  let sqm = NaN;
+  if(!card.image){ msg = '写真を読み込んでください。'; }
+  else if(card.scalePoints.length < 2){ msg = '基準線を2点打ってください。'; }
+  else if(!(Number.isFinite(knownLen) && knownLen > 0)){ msg = '基準線の実寸を m で入力してください。'; }
+  else if(!soilReady){ msg = '塗る土壁だけを3点以上で囲い、「土壁を閉じる」を押してください。'; }
+  else {
+    const pxLen = pixelDistance(card.scalePoints[0], card.scalePoints[1]);
+    if(pxLen <= 0){ msg = '基準線が短すぎます。'; }
+    else {
+      const meterPerPx = knownLen / pxLen;
+      sqm = polygonAreaPx(card.soilPoints) * meterPerPx * meterPerPx;
+      msg = 'この写真の塗る面積を計算できました。';
+    }
+  }
+  card.area = sqm;
+  card.sqmEl.textContent = Number.isFinite(sqm) ? fmt(sqm,6) : '—';
+  card.tsuboEl.textContent = Number.isFinite(sqm) ? fmt(sqm / SQM_PER_TSUBO,6) : '—';
+  card.statusEl.className = Number.isFinite(sqm) ? 'success cardStatus' : 'warn cardStatus';
+  card.statusEl.textContent = msg;
+
+  const info = [];
+  if(card.scalePoints.length===2) info.push(`基準線 ${fmt(pixelDistance(card.scalePoints[0], card.scalePoints[1]),2)} px`);
+  if(card.soilPoints.length>=3 && card.soilClosed) info.push(`土壁 ${fmt(polygonAreaPx(card.soilPoints),2)} px²`);
+  card.infoEl.textContent = info.join(' / ') || '—';
+}
+function updateWallTotals(wall){
+  const valid = wall.photos.map(p=>p.area).filter(v=>Number.isFinite(v));
+  const total = valid.reduce((a,b)=>a+b,0);
+  wall.photoCountEl.textContent = `${wall.photos.length} / 4`;
+  wall.wallSqmEl.textContent = valid.length ? fmt(total,6) : '—';
+  wall.wallTsuboEl.textContent = valid.length ? fmt(total / SQM_PER_TSUBO,6) : '—';
+  wall.totalArea = total;
+}
+function updateRoomTotals(room){
+  const valid = room.walls.map(w=>w.totalArea).filter(v=>Number.isFinite(v) && v>0);
+  const total = valid.reduce((a,b)=>a+b,0);
+  room.wallCountEl.textContent = String(room.walls.length);
+  room.roomSqmEl.textContent = valid.length ? fmt(total,6) : '—';
+  room.roomTsuboEl.textContent = valid.length ? fmt(total / SQM_PER_TSUBO,6) : '—';
+  room.totalArea = total;
+}
+function updateHouseTotals(){
+  const valid = houseState.rooms.map(r=>r.totalArea).filter(v=>Number.isFinite(v) && v>0);
+  const total = valid.reduce((a,b)=>a+b,0);
+  roomCountEl.textContent = String(houseState.rooms.length);
+  houseTotalSqmEl.textContent = valid.length ? fmt(total,6) : '—';
+  houseTotalTsuboEl.textContent = valid.length ? fmt(total / SQM_PER_TSUBO,6) : '—';
+}
+function syncPhotoCard(card){
+  drawPhotoCard(card);
+  calcPhotoArea(card);
+  updateWallTotals(card.wall);
+  updateRoomTotals(card.wall.room);
+  updateHouseTotals();
+}
+function setTool(card, tool){
+  card.tool = tool;
+  card.scaleBtn.classList.toggle('activeTool', tool==='scale');
+  card.soilBtn.classList.toggle('activeTool', tool==='soil');
+  card.scaleBtn.classList.toggle('ghost', tool!=='scale');
+  card.soilBtn.classList.toggle('ghost', tool!=='soil');
+}
+function handleCanvasTap(card, ev){
+  if(!card.image) return;
+  ev.preventDefault();
+  const p = clientToCanvas(ev, card.canvas);
+  if(card.tool === 'scale'){
+    if(card.scalePoints.length >= 2) card.scalePoints = [];
+    card.scalePoints.push(p);
+  } else {
+    if(card.soilClosed){ card.soilPoints = []; card.soilClosed = false; }
+    card.soilPoints.push(p);
+  }
+  syncPhotoCard(card);
+}
+function loadImageToCard(card, file){
+  const reader = new FileReader();
+  reader.onload = () => {
+    const img = new Image();
+    img.onload = () => {
+      const maxW = 1400, maxH = 1800;
+      const scale = Math.min(maxW / img.width, maxH / img.height, 1);
+      card.canvas.width = Math.round(img.width * scale);
+      card.canvas.height = Math.round(img.height * scale);
+      card.image = img;
+      card.scalePoints = [];
+      card.soilPoints = [];
+      card.soilClosed = false;
+      syncPhotoCard(card);
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+}
+function createPhotoCard(wall){
+  if(wall.photos.length >= 4){
+    alert('1つの壁に追加できる写真は4枚までです。');
+    return;
+  }
+  const id = houseState.nextPhotoId++;
+  const wrap = document.createElement('div');
+  wrap.className = 'photoCard';
+  wrap.innerHTML = `
+    <div class="photoHead">
+      <div class="photoTitle">写真 ${wall.photos.length + 1}</div>
+      <div class="mini">基準線 → 塗る土壁を囲う</div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <div>
+        <label>写真ファイル</label>
+        <input type="file" accept="image/*" class="photoFile" />
+      </div>
+      <div>
+        <label>担当範囲メモ</label>
+        <input type="text" class="photoMemo" placeholder="例: 左側 / 中央 / 右上" />
+      </div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <div>
+        <label>基準線の実寸（m）</label>
+        <input type="number" min="0" step="any" class="knownLen" placeholder="例: 1.82" />
+      </div>
+      <div>
+        <label>補足メモ</label>
+        <input type="text" class="photoNote" placeholder="例: 柱間、窓下のみ" />
+      </div>
+    </div>
+    <div class="toolbarRow">
+      <button type="button" class="scaleBtn">① 基準線</button>
+      <button type="button" class="soilBtn ghost">② 塗る土壁</button>
+      <button type="button" class="closeSoilBtn ghost">土壁を閉じる</button>
+      <button type="button" class="undoBtn ghost">1点戻す</button>
+      <button type="button" class="resetBtn ghost">この写真をリセット</button>
+      <button type="button" class="deleteBtn danger">削除</button>
+    </div>
+    <div class="canvasWrap"><canvas class="photoCanvas" width="900" height="600"></canvas></div>
+    <div class="meter">
+      <div class="resultBox"><div class="small">この写真の塗る面積（㎡）</div><div class="value cardSqm">—</div></div>
+      <div class="resultBox"><div class="small">この写真の塗る面積（坪）</div><div class="value cardTsubo">—</div></div>
+      <div class="resultBox"><div class="small">内部情報</div><div class="mini cardInfo">—</div></div>
+    </div>
+    <div class="warn cardStatus" style="margin-top:10px">写真を読み込んでください。</div>
+  `;
+  wall.photosEl.appendChild(wrap);
+
+  const card = {
+    id, wall, wrap,
+    canvas: wrap.querySelector('.photoCanvas'),
+    fileInput: wrap.querySelector('.photoFile'),
+    memoInput: wrap.querySelector('.photoMemo'),
+    noteInput: wrap.querySelector('.photoNote'),
+    lengthInput: wrap.querySelector('.knownLen'),
+    scaleBtn: wrap.querySelector('.scaleBtn'),
+    soilBtn: wrap.querySelector('.soilBtn'),
+    closeSoilBtn: wrap.querySelector('.closeSoilBtn'),
+    undoBtn: wrap.querySelector('.undoBtn'),
+    resetBtn: wrap.querySelector('.resetBtn'),
+    deleteBtn: wrap.querySelector('.deleteBtn'),
+    sqmEl: wrap.querySelector('.cardSqm'),
+    tsuboEl: wrap.querySelector('.cardTsubo'),
+    statusEl: wrap.querySelector('.cardStatus'),
+    infoEl: wrap.querySelector('.cardInfo'),
+    scalePoints: [],
+    soilPoints: [],
+    soilClosed: false,
+    tool: 'scale',
+    image: null,
+    area: NaN
+  };
+
+  card.fileInput.addEventListener('change', (e)=>{
+    const file = e.target.files && e.target.files[0];
+    if(file) loadImageToCard(card, file);
+  });
+  card.lengthInput.addEventListener('input', ()=> syncPhotoCard(card));
+  card.scaleBtn.addEventListener('click', ()=> setTool(card, 'scale'));
+  card.soilBtn.addEventListener('click', ()=> setTool(card, 'soil'));
+  card.closeSoilBtn.addEventListener('click', ()=>{
+    if(card.soilPoints.length >= 3){ card.soilClosed = true; syncPhotoCard(card); }
+  });
+  card.undoBtn.addEventListener('click', ()=>{
+    if(card.tool === 'soil' && card.soilPoints.length){
+      card.soilClosed = false;
+      card.soilPoints.pop();
+    } else if(card.tool === 'scale' && card.scalePoints.length){
+      card.scalePoints.pop();
+    }
+    syncPhotoCard(card);
+  });
+  card.resetBtn.addEventListener('click', ()=>{
+    card.scalePoints = [];
+    card.soilPoints = [];
+    card.soilClosed = false;
+    card.lengthInput.value = '';
+    syncPhotoCard(card);
+  });
+  card.deleteBtn.addEventListener('click', ()=>{
+    wrap.remove();
+    wall.photos = wall.photos.filter(p=>p!==card);
+    updateWallTotals(wall);
+    updateRoomTotals(wall.room);
+    updateHouseTotals();
+  });
+
+  card.canvas.addEventListener('click', (ev)=> handleCanvasTap(card, ev));
+  card.canvas.addEventListener('touchstart', (ev)=> handleCanvasTap(card, ev), { passive: false });
+
+  wall.photos.push(card);
+  setTool(card, 'scale');
+  syncPhotoCard(card);
+}
+function collectRoomPhotoEntries(room){
+  const entries = [];
+  room.walls.forEach((wall, wallIdx) => {
+    wall.photos.forEach((photo, photoIdx) => {
+      if (!photo.image) return;
+      entries.push({
+        wall,
+        photo,
+        wallIndex: wallIdx + 1,
+        photoIndex: photoIdx + 1,
+        wallName: wall.nameInput.value || `壁 ${wallIdx + 1}`,
+        memo: photo.memoInput.value || '',
+        note: photo.noteInput.value || '',
+        area: photo.area,
+        canvas: photo.canvas
+      });
+    });
+  });
+  return entries;
+}
+function drawRoomSummaryHeader(ctx, roomName, room, houseTotal, pageLabel, compact = false){
+  const pad = 64;
+  const width = 1240 - pad * 2;
+  drawSheetHeader(ctx, '土壁面積シート', compact ? '写真ページ' : '部屋ごとの記録用');
+  drawLabelValue(ctx, '部屋名', roomName, pad, compact ? 150 : 162);
+  drawLabelValue(ctx, '作成日時', new Date().toLocaleString('ja-JP'), pad, compact ? 186 : 200);
+  drawLabelValue(ctx, 'ページ', pageLabel, 760, compact ? 150 : 162, 120);
+
+  const boxY = compact ? 220 : 236;
+  const boxH = compact ? 118 : 156;
+  fillStrokeBox(ctx, pad, boxY, width, boxH, '#ecfdf5', '#86efac', 3, 24);
+  ctx.fillStyle = '#166534';
+  ctx.font = compact ? 'bold 22px sans-serif' : 'bold 26px sans-serif';
+  ctx.fillText('合計', pad + 24, boxY + 40);
+  ctx.fillStyle = '#064e3b';
+  ctx.font = compact ? 'bold 30px sans-serif' : 'bold 42px sans-serif';
+  ctx.fillText(`この部屋: ${fmt(room.totalArea,6)} ㎡`, pad + 24, boxY + (compact ? 78 : 96));
+  ctx.font = compact ? 'bold 24px sans-serif' : 'bold 32px sans-serif';
+  ctx.fillText(`${fmt(room.totalArea / SQM_PER_TSUBO,6)} 坪`, pad + 24, boxY + (compact ? 108 : 134));
+  ctx.fillStyle = '#334155';
+  ctx.font = compact ? 'bold 22px sans-serif' : 'bold 30px sans-serif';
+  ctx.fillText(`1軒合計: ${fmt(houseTotal,6)} ㎡ / ${fmt(houseTotal / SQM_PER_TSUBO,6)} 坪`, pad + 560, boxY + (compact ? 78 : 98));
+  return { pad, width, nextY: boxY + boxH + 24 };
+}
+function drawRoomWallsTable(ctx, room, x, y, width){
+  fillStrokeBox(ctx, x, y, width, 356, '#ffffff', '#cbd5e1', 2, 22);
+  ctx.fillStyle = '#111827';
+  ctx.font = 'bold 28px sans-serif';
+  ctx.fillText('壁ごとの面積', x + 20, y + 38);
+
+  const tableX = x + 18;
+  const tableY = y + 64;
+  const col1 = 60, col2 = 410, col3 = 265, col4 = 265;
+  const rowH = 44;
+  const tableW = col1 + col2 + col3 + col4;
+  fillStrokeBox(ctx, tableX, tableY, tableW, rowH, '#eff6ff', '#bfdbfe', 1, 8);
+  ctx.fillStyle = '#1e3a8a';
+  ctx.font = 'bold 22px sans-serif';
+  ctx.fillText('No', tableX + 14, tableY + 29);
+  ctx.fillText('壁名', tableX + col1 + 14, tableY + 29);
+  ctx.fillText('㎡', tableX + col1 + col2 + 14, tableY + 29);
+  ctx.fillText('坪', tableX + col1 + col2 + col3 + 14, tableY + 29);
+
+  let cy = tableY + rowH;
+  room.walls.slice(0, 6).forEach((wall, idx) => {
+    fillStrokeBox(ctx, tableX, cy, tableW, rowH, idx % 2 ? '#ffffff' : '#f8fafc', '#e2e8f0', 1, 4);
+    ctx.fillStyle = '#111827';
+    ctx.font = '21px sans-serif';
+    ctx.fillText(String(idx + 1), tableX + 16, cy + 29);
+    drawWrappedText(ctx, wall.nameInput.value || `壁 ${idx+1}`, tableX + col1 + 14, cy + 28, col2 - 24, 24, '#111827');
+    ctx.fillText(Number.isFinite(wall.totalArea) ? fmt(wall.totalArea,4) : '—', tableX + col1 + col2 + 14, cy + 29);
+    ctx.fillText(Number.isFinite(wall.totalArea) ? fmt(wall.totalArea / SQM_PER_TSUBO,4) : '—', tableX + col1 + col2 + col3 + 14, cy + 29);
+    cy += rowH;
+  });
+  if (room.walls.length > 6) {
+    ctx.fillStyle = '#b45309';
+    ctx.font = '20px sans-serif';
+    ctx.fillText('※ 壁が7件以上あるため、この表には先頭6件まで表示しています。', tableX, cy + 28);
+  }
+}
+function drawRoomPhotoGrid(ctx, entries, x, y, width){
+  const titleH = 54;
+  fillStrokeBox(ctx, x, y, width, 890, '#ffffff', '#cbd5e1', 2, 22);
+  ctx.fillStyle = '#111827';
+  ctx.font = 'bold 28px sans-serif';
+  ctx.fillText('選んだ壁写真', x + 20, y + 40);
+
+  const cellW = (width - 30) / 2;
+  const cellH = 380;
+  entries.forEach((entry, idx) => {
+    const col = idx % 2;
+    const row = Math.floor(idx / 2);
+    const xx = x + 18 + col * (cellW + 14);
+    const yy = y + titleH + 14 + row * (cellH + 18);
+    fillStrokeBox(ctx, xx, yy, cellW, cellH, '#f8fafc', '#cbd5e1', 1, 14);
+
+    const srcCanvas = entry.canvas;
+    const imgBoxX = xx + 10, imgBoxY = yy + 10, imgBoxW = cellW - 20, imgBoxH = 236;
+    const scale = Math.min(imgBoxW / srcCanvas.width, imgBoxH / srcCanvas.height);
+    const dw = srcCanvas.width * scale;
+    const dh = srcCanvas.height * scale;
+    ctx.drawImage(srcCanvas, imgBoxX + (imgBoxW - dw)/2, imgBoxY + (imgBoxH - dh)/2, dw, dh);
+
+    ctx.fillStyle = '#111827';
+    ctx.font = 'bold 21px sans-serif';
+    drawWrappedText(ctx, `${entry.wallName} / 写真${entry.photoIndex}`, xx + 12, yy + 274, cellW - 24, 26, '#111827');
+    ctx.font = '19px sans-serif';
+    const areaText = Number.isFinite(entry.area) ? `${fmt(entry.area,4)} ㎡ / ${fmt(entry.area / SQM_PER_TSUBO,4)} 坪` : '未計算';
+    drawWrappedText(ctx, areaText, xx + 12, yy + 306, cellW - 24, 24, '#334155');
+    const extra = [entry.memo, entry.note].filter(Boolean).join(' / ');
+    if (extra) drawWrappedText(ctx, extra, xx + 12, yy + 334, cellW - 24, 22, '#64748b');
+  });
+}
+async function exportRoomSheet(room){
+  if(!(Number.isFinite(room.totalArea) && room.totalArea > 0)){
+    alert('この部屋で有効な壁面積が出てからJPEGを書き出してください。');
+    return;
+  }
+
+  const photoEntries = collectRoomPhotoEntries(room);
+  const houseTotal = houseState.rooms.map(r=>r.totalArea).filter(v=>Number.isFinite(v)&&v>0).reduce((a,b)=>a+b,0);
+  const roomName = room.nameInput.value || `部屋 ${room.id}`;
+  const baseName = `土壁面積_A4_${safeFileName(roomName)}_${nowStamp()}`;
+  const items = [];
+
+  const perPage = 4;
+  const photoPages = Math.max(1, Math.ceil(photoEntries.length / perPage));
+  const totalPages = photoPages;
+
+  for(let page = 0; page < totalPages; page++){
+    const { canvas, ctx } = makeA4Canvas();
+    const compact = page > 0;
+    const { pad, width, nextY } = drawRoomSummaryHeader(ctx, roomName, room, houseTotal, `${page + 1} / ${totalPages}`, compact);
+
+    if(page === 0){
+      drawRoomWallsTable(ctx, room, pad, nextY, width);
+      drawRoomPhotoGrid(ctx, photoEntries.slice(0, perPage), pad, 810, width);
+    } else {
+      const sliceStart = page * perPage;
+      const sliceEnd = sliceStart + perPage;
+      drawRoomPhotoGrid(ctx, photoEntries.slice(sliceStart, sliceEnd), pad, nextY, width);
+    }
+
+    if(!photoEntries.length && page === 0){
+      ctx.fillStyle = '#6b7280';
+      ctx.font = '22px sans-serif';
+      ctx.fillText('写真がまだありません。', pad + 26, 930);
+    }
+
+    const footer = photoEntries.length
+      ? '注意: 重なって写る土壁は片方の写真だけで囲ってください。塗る場所だけを囲って合計しています。写真は入力順に4枚ずつA4へ自動分割しています。'
+      : '注意: 写真がまだないため、集計情報だけを出力しています。';
+    drawSheetFooter(ctx, footer);
+    items.push({ canvas, filename: `${baseName}_p${String(page + 1).padStart(2, '0')}` });
+  }
+
+  await saveMultipleCanvasAsJpegs(items);
+}
+function createWallCard(room){
+  const id = houseState.nextWallId++;
+  const wrap = document.createElement('div');
+  wrap.className = 'wallCard';
+  wrap.innerHTML = `
+    <div class="wallHead">
+      <div>
+        <div class="wallTitle">壁 ${room.walls.length + 1}</div>
+        <div class="mini">1面につき写真1〜4枚。重なる場所は片方だけ囲ってください。</div>
+      </div>
+      <div style="min-width:220px">
+        <label>壁名</label>
+        <input type="text" class="wallName" placeholder="例: 東側壁 / 南面 / 床の間横" />
+      </div>
+    </div>
+    <div class="meter" style="margin-top:12px">
+      <div class="resultBox"><div class="small">写真数</div><div class="value wallPhotoCount">0 / 4</div></div>
+      <div class="resultBox"><div class="small">この壁の合計（㎡）</div><div class="value wallSqm">—</div></div>
+      <div class="resultBox"><div class="small">この壁の合計（坪）</div><div class="value wallTsubo">—</div></div>
+    </div>
+    <div class="wallActions">
+      <button type="button" class="addPhotoBtn">この壁に写真を追加</button>
+      <button type="button" class="deleteWallBtn danger">この壁を削除</button>
+    </div>
+    <div class="wallPhotos photoGrid"></div>
+  `;
+  room.wallsEl.appendChild(wrap);
+
+  const wall = {
+    id, room, wrap,
+    photos: [],
+    totalArea: 0,
+    nameInput: wrap.querySelector('.wallName'),
+    photosEl: wrap.querySelector('.wallPhotos'),
+    photoCountEl: wrap.querySelector('.wallPhotoCount'),
+    wallSqmEl: wrap.querySelector('.wallSqm'),
+    wallTsuboEl: wrap.querySelector('.wallTsubo'),
+    addPhotoBtn: wrap.querySelector('.addPhotoBtn'),
+    deleteWallBtn: wrap.querySelector('.deleteWallBtn')
+  };
+  wall.addPhotoBtn.addEventListener('click', ()=> createPhotoCard(wall));
+  wall.deleteWallBtn.addEventListener('click', ()=>{
+    wrap.remove();
+    room.walls = room.walls.filter(w=>w!==wall);
+    updateRoomTotals(room);
+    updateHouseTotals();
+  });
+
+  room.walls.push(wall);
+  createPhotoCard(wall);
+  updateWallTotals(wall);
+  updateRoomTotals(room);
+  updateHouseTotals();
+}
+function createRoomCard(){
+  const id = houseState.nextRoomId++;
+  const wrap = document.createElement('div');
+  wrap.className = 'roomCard';
+  wrap.innerHTML = `
+    <div class="roomHead">
+      <div>
+        <div class="roomTitle">部屋 ${id}</div>
+        <div class="mini">例: 1階東側8畳和室 / 2階山側6畳和室 / トイレ西側廊下 / 階段</div>
+      </div>
+      <div style="min-width:260px">
+        <label>部屋名</label>
+        <input type="text" class="roomName" placeholder="例: 1階東側8畳和室" />
+      </div>
+    </div>
+    <div class="meter" style="margin-top:12px">
+      <div class="resultBox"><div class="small">壁数</div><div class="value roomWallCount">0</div></div>
+      <div class="resultBox"><div class="small">この部屋の合計（㎡）</div><div class="value roomSqm">—</div></div>
+      <div class="resultBox"><div class="small">この部屋の合計（坪）</div><div class="value roomTsubo">—</div></div>
+    </div>
+    <div class="roomActions">
+      <button type="button" class="addWallBtn">この部屋に壁を追加</button>
+      <button type="button" class="exportRoomBtn">この部屋を帳票A4 JPEGで保存（複数ページ対応）</button>
+      <button type="button" class="deleteRoomBtn danger">この部屋を削除</button>
+    </div>
+    <div class="wallGrid roomWalls"></div>
+  `;
+  roomCardsEl.appendChild(wrap);
+
+  const room = {
+    id, wrap,
+    walls: [],
+    totalArea: 0,
+    nameInput: wrap.querySelector('.roomName'),
+    wallsEl: wrap.querySelector('.roomWalls'),
+    wallCountEl: wrap.querySelector('.roomWallCount'),
+    roomSqmEl: wrap.querySelector('.roomSqm'),
+    roomTsuboEl: wrap.querySelector('.roomTsubo'),
+    addWallBtn: wrap.querySelector('.addWallBtn'),
+    exportRoomBtn: wrap.querySelector('.exportRoomBtn'),
+    deleteRoomBtn: wrap.querySelector('.deleteRoomBtn')
+  };
+  room.addWallBtn.addEventListener('click', ()=> createWallCard(room));
+  room.exportRoomBtn.addEventListener('click', ()=> exportRoomSheet(room));
+  room.deleteRoomBtn.addEventListener('click', ()=>{
+    wrap.remove();
+    houseState.rooms = houseState.rooms.filter(r=>r!==room);
+    updateHouseTotals();
+  });
+
+  houseState.rooms.push(room);
+  createWallCard(room);
+  updateRoomTotals(room);
+  updateHouseTotals();
+}
+addRoomBtn.addEventListener('click', createRoomCard);
+
+clearRoomsBtn.addEventListener('click', ()=>{
+  roomCardsEl.innerHTML = '';
+  houseState.rooms = [];
+  updateHouseTotals();
+});
+
+// ===== 控えJSON保存・読込（画像なし・最小追加） =====
+function clonePointForJson(p){ return { x: Number(p.x) || 0, y: Number(p.y) || 0 }; }
+function makeHouseBackupJson(){
+  return {
+    app: 'wall_area_tool',
+    version: 1,
+    savedAt: new Date().toISOString(),
+    note: '画像は含みません。部屋名・壁名・基準線・囲い点・面積の控えです。',
+    rooms: houseState.rooms.map(room => ({
+      name: room.nameInput ? room.nameInput.value : '',
+      totalArea: Number.isFinite(room.totalArea) ? room.totalArea : 0,
+      walls: room.walls.map(wall => ({
+        name: wall.nameInput ? wall.nameInput.value : '',
+        totalArea: Number.isFinite(wall.totalArea) ? wall.totalArea : 0,
+        photos: wall.photos.map(photo => ({
+          memo: photo.memoInput ? photo.memoInput.value : '',
+          note: photo.noteInput ? photo.noteInput.value : '',
+          knownLength: photo.lengthInput ? photo.lengthInput.value : '',
+          scalePoints: (photo.scalePoints || []).map(clonePointForJson),
+          soilPoints: (photo.soilPoints || []).map(clonePointForJson),
+          soilClosed: !!photo.soilClosed,
+          area: Number.isFinite(photo.area) ? photo.area : null,
+          canvasWidth: photo.canvas ? photo.canvas.width : null,
+          canvasHeight: photo.canvas ? photo.canvas.height : null
+        }))
+      }))
+    }))
+  };
+}
+function downloadTextFile(filename, text, mime){
+  const blob = new Blob([text], { type: mime || 'application/octet-stream' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 800);
+}
+function saveHouseBackupJson(){
+  const data = makeHouseBackupJson();
+  const filename = `土壁面積_控えJSON_画像なし_${nowStamp()}.json`;
+  downloadTextFile(filename, JSON.stringify(data, null, 2), 'application/json;charset=utf-8');
+  if(jsonStatusEl) jsonStatusEl.textContent = `保存操作を実行しました：${filename}（保存先は端末のダウンロード/ファイルです）`;
+}
+function clearHouseCardsOnly(){
+  roomCardsEl.innerHTML = '';
+  houseState.rooms = [];
+  houseState.nextRoomId = 1;
+  houseState.nextWallId = 1;
+  houseState.nextPhotoId = 1;
+  updateHouseTotals();
+}
+function restoreSavedAreaToPhoto(photo, savedArea){
+  if(!Number.isFinite(savedArea)) return;
+  photo.area = savedArea;
+  photo.sqmEl.textContent = fmt(savedArea, 6);
+  photo.tsuboEl.textContent = fmt(savedArea / SQM_PER_TSUBO, 6);
+  photo.statusEl.className = 'success cardStatus';
+  photo.statusEl.textContent = '画像なしJSONから面積控えを復元しました。再計算するには写真を読み込んでください。';
+  const info = [];
+  if(photo.scalePoints.length===2) info.push(`基準線 ${fmt(pixelDistance(photo.scalePoints[0], photo.scalePoints[1]),2)} px`);
+  if(photo.soilPoints.length>=3 && photo.soilClosed) info.push(`土壁 ${fmt(polygonAreaPx(photo.soilPoints),2)} px²`);
+  photo.infoEl.textContent = info.join(' / ') || 'JSON復元';
+}
+function restoreHouseBackupJson(data){
+  if(!data || !Array.isArray(data.rooms)) throw new Error('このJSONはこのアプリの控え形式ではありません。');
+  clearHouseCardsOnly();
+  data.rooms.forEach(roomData => {
+    createRoomCard();
+    const room = houseState.rooms[houseState.rooms.length - 1];
+    if(room.nameInput) room.nameInput.value = roomData.name || '';
+    room.walls.forEach(w => w.wrap.remove());
+    room.walls = [];
+    (roomData.walls || []).forEach(wallData => {
+      createWallCard(room);
+      const wall = room.walls[room.walls.length - 1];
+      if(wall.nameInput) wall.nameInput.value = wallData.name || '';
+      wall.photos.forEach(p => p.wrap.remove());
+      wall.photos = [];
+      (wallData.photos || []).forEach(photoData => {
+        createPhotoCard(wall);
+        const photo = wall.photos[wall.photos.length - 1];
+        if(photo.memoInput) photo.memoInput.value = photoData.memo || '';
+        if(photo.noteInput) photo.noteInput.value = photoData.note || '';
+        if(photo.lengthInput) photo.lengthInput.value = photoData.knownLength || '';
+        photo.scalePoints = Array.isArray(photoData.scalePoints) ? photoData.scalePoints.map(clonePointForJson) : [];
+        photo.soilPoints = Array.isArray(photoData.soilPoints) ? photoData.soilPoints.map(clonePointForJson) : [];
+        photo.soilClosed = !!photoData.soilClosed;
+        if(Number.isFinite(Number(photoData.canvasWidth)) && Number.isFinite(Number(photoData.canvasHeight))){
+          photo.canvas.width = Math.max(1, Number(photoData.canvasWidth));
+          photo.canvas.height = Math.max(1, Number(photoData.canvasHeight));
+        }
+        drawPhotoCard(photo);
+        restoreSavedAreaToPhoto(photo, Number(photoData.area));
+      });
+      updateWallTotals(wall);
+    });
+    updateRoomTotals(room);
+  });
+  updateHouseTotals();
+  if(!houseState.rooms.length) createRoomCard();
+  if(jsonStatusEl) jsonStatusEl.textContent = '控えJSONを読み込みました。画像は含まれないため、写真表示は空のままです。';
+}
+if(saveJsonBtn) saveJsonBtn.addEventListener('click', saveHouseBackupJson);
+if(loadJsonBtn) loadJsonBtn.addEventListener('click', () => loadJsonInput && loadJsonInput.click());
+if(loadJsonInput) loadJsonInput.addEventListener('change', () => {
+  const file = loadJsonInput.files && loadJsonInput.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try { restoreHouseBackupJson(JSON.parse(reader.result)); }
+    catch(e) { alert('JSON読込に失敗しました：' + (e && e.message ? e.message : e)); }
+    finally { loadJsonInput.value = ''; }
+  };
+  reader.readAsText(file, 'utf-8');
+});
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+createRoomCard();
 </script>
 </body>
 </html>
